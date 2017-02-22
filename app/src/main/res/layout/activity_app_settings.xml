@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_app_settings"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.myApp.vilrolf.discgolfputting.Activity.AppSettingsActivity">
+
+    <Button
+        android:text="@string/imperial_or_metric"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/buttonSettingsMetricImperial"
+        android:onClick="changeMetricOrImperial"/>
+
+    <Button
+        android:text="@string/game_type_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/buttonGameTypeList"
+        android:onClick="openGameTypeList"
+        android:layout_below="@+id/buttonUserList"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:text="@string/user_list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/buttonUserList"
+        android:onClick="openUserList"
+        android:layout_below="@+id/buttonSettingsMetricImperial"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="32dp" />
+
+    <Button
+        android:text="Progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/buttonGameTypeList"
+        android:layout_alignLeft="@+id/buttonUserList"
+        android:layout_alignStart="@+id/buttonUserList"
+        android:id="@+id/buttonProgress"
+        android:onClick="goToProgress" />
+
+</RelativeLayout>

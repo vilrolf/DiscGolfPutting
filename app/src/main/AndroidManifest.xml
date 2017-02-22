@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.myApp.vilrolf.discgolfputting">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity android:name=".Activity.MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/title_activity_settings" />
+        <activity
+            android:name=".Activity.GameActivity"
+            android:label="@string/game_activity_test"
+            android:parentActivityName=".Activity.MainActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.myApp.vilrolf.discgolfputting.Activity.MainActivity" />
+        </activity>
+        <!--
+             ATTENTION: This was auto-generated to add Google Play services to your project for
+             App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information.
+        -->
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
+        <activity
+            android:name=".Activity.GameList"
+            android:label="@string/title_activity_db_test"
+            android:parentActivityName=".Activity.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.myApp.vilrolf.discgolfputting.Activity.MainActivity" />
+        </activity>
+        <activity
+            android:name=".Activity.GraphTest"
+            android:label="@string/title_activity_graph_test"
+            android:parentActivityName=".Activity.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.myApp.vilrolf.discgolfputting.Activity.MainActivity" />
+        </activity>
+        <activity
+            android:name=".Activity.NewGameType"
+            android:label="@string/title_activity_new_game_type"
+            android:parentActivityName=".Activity.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.myApp.vilrolf.discgolfputting.Activity.MainActivity" />
+        </activity>
+        <activity android:name=".Activity.StatisticsActivity" />
+        <activity
+            android:name=".Activity.GameStatsticsActivity"
+            android:label="@string/title_activity_game_statstics"
+            android:parentActivityName=".Activity.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.myApp.vilrolf.discgolfputting.Activity.MainActivity" />
+        </activity>
+        <activity android:name=".Activity.AppSettingsActivity" />
+        <activity
+            android:name=".Activity.MultiplayerGameStatistics"
+            android:label="@string/title_activity_multiplayer_game_statistics"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".Activity.GenericListActivity" />
+        <activity
+            android:name=".Activity.GameDynamicActivity"
+            android:label="@string/title_activity_game_dynamic"
+            android:parentActivityName=".Activity.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.myApp.vilrolf.discgolfputting.Activity.MainActivity" />
+        </activity>
+        <activity android:name=".Activity.ProgressActivity"></activity>
+    </application>
+
+</manifest>

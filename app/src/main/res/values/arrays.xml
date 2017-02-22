@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="distance_types">
+        <item>Imperial</item>
+        <item>Metric</item>
+    </string-array>
+    <string-array name="gameTypeStandardFields">
+        <item>Game type name</item>
+        <item>Number of rounds</item>
+        <item>Number of throws per round</item>
+        <item>First shot multiplier</item>
+        <item>Last shot multiplier</item>
+        <item>All shot hit bonus</item>
+        <item>Start distance</item>
+        <item>Distance increment</item>
+        <item>Points per distance</item>
+    </string-array>
+    <string-array name="gameTypeStandardValues">
+        <item> </item>
+        <item>6</item>
+        <item>6</item>
+        <item>1.2</item>
+        <item>1.2</item>
+        <item>1</item>
+        <item>15</item>
+        <item>5</item>
+        <item>1</item>
+    </string-array>
+    <string-array name="gameTypeStandardValuesMeter">
+        <item> </item>
+        <item>6</item>
+        <item>6</item>
+        <item>1.2</item>
+        <item>1.2</item>
+        <item>1</item>
+        <item>3</item>
+        <item>1.5</item>
+        <item>3</item>
+    </string-array>
+    <string-array name="gameTypeDynamicFields">
+        <item>Upgrade threshold</item>
+        <item>Downgrade threshold</item>
+    </string-array>
+    <string-array name="gameTypeDynamicValues">
+        <item>6</item>
+        <item>2</item>
+    </string-array>
+
+</resources>
