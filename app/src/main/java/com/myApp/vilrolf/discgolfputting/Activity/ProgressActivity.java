@@ -17,6 +17,7 @@ public class ProgressActivity extends AppCompatActivity {
         setContentView(R.layout.activity_progress);
 
         mydb = new DbHelper(this);
+        mydb.calculateAVGPointPerThrowForEachGame();
        // mydb.get7DayStatisticsFromDistance(3.1);
 
         LineChartView lineChartView = (LineChartView) findViewById(R.id.linechartProgress);

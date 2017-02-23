@@ -1,6 +1,5 @@
 package com.myApp.vilrolf.discgolfputting.Presenter;
 
-import android.content.Context;
 import android.content.Intent;
 import android.widget.Toast;
 
@@ -11,6 +10,7 @@ import com.myApp.vilrolf.discgolfputting.Database.Throw;
 import com.myApp.vilrolf.discgolfputting.Database.User;
 import com.myApp.vilrolf.discgolfputting.Engine.GameEngine;
 import com.myApp.vilrolf.discgolfputting.Engine.GameEngineDynamic;
+import com.myApp.vilrolf.discgolfputting.Engine.GameEngineStreak;
 import com.myApp.vilrolf.discgolfputting.MvpView.GameDynamicView;
 
 import java.util.ArrayList;
@@ -19,62 +19,34 @@ import java.util.ArrayList;
  * Created by Viljar on 16-Feb-17.
  */
 
-public class GameDynamicPresenter extends GamePresenter {
+public class GameDynamicStreakPresenter extends GameDynamicPresenter {
     private boolean gameStarted = false;
-    GameDynamicView gameDynamicView;
-    private ArrayList<GameEngineDynamic> gameEngineDynamics = new ArrayList<>();
+    private ArrayList<GameEngineStreak> gameEngineStreaks = new ArrayList<>();
 
-    public GameDynamicPresenter() {
-    }
-
-
-    public void setGdw(GameDynamicView gdw) {
-        super.setGw(gdw);
-        this.gameDynamicView = gdw;
-        gdw.setGamePresenter(this);
+    public GameDynamicStreakPresenter() {
 
     }
+
 
     public void removeUser(GameEngineDynamic gameEngineDynamic) {
         super.removeUser(gameEngineDynamic);
         gameDynamicView.removeGame(gameEngineDynamic);
-        gameEngineDynamics.remove(gameEngineDynamic);
+        gameEngineStreaks.remove(gameEngineDynamic);
 
-    }
-
-    public void setupGdp(Context context) {
-        super.setupGp(context);
-        addUser(super.getUnusedUsers().get(0));
-        // newRound();
-    }
-
-
-    public void newUser() {
-        if (super.getUnusedUsers().size() == 0) {
-            gameDynamicView.createDialogCreateNewUser();
-        } else {
-            gameDynamicView.createDialogSelectUser();
-        }
     }
 
 
     public void addUser(User user) {
 
-        GameEngineDynamic gameEngineDynamic = new GameEngineDynamic();
-        super.addUser(user, gameEngineDynamic);
-        gameDynamicView.addUserTvHits(gameEngineDynamic);
-        gameDynamicView.addUserTvRemaining(gameEngineDynamic);
-        gameEngineDynamics.add(gameEngineDynamic);
-        gameDynamicView.addUserButton(gameEngineDynamic);
+        GameEngineStreak gameEngineStreak = new GameEngineStreak();
+        super.addUser(user, gameEngineStreak);
+        gameDynamicView.addUserTvHits(gameEngineStreak);
+        gameDynamicView.addUserTvRemaining(gameEngineStreak);
+        gameEngineStreaks.add(gameEngineStreak);
+        gameDynamicView.addUserButton(gameEngineStreak);
 
-        gameEngineDynamic.getNextRoundThrows();
-        gameDynamicView.createRound(gameEngineDynamic);
-    }
-
-    public User createNewUser(String value) {
-        User user = super.createNewUser(value);
-        addUser(user);
-        return user;
+        gameEngineStreak.getNextRoundThrows();
+        gameDynamicView.createRound(gameEngineStreak);
     }
 
 
@@ -84,8 +56,8 @@ public class GameDynamicPresenter extends GamePresenter {
             startGame();
         }
         gameDynamicView.clearGameTable();
-        for (GameEngineDynamic ge : gameEngineDynamics) {
-            ge.saveThrows();
+        for (GameEngineStreak ge : gameEngineStreaks) {
+            ge.saveThrows(); // Also updates distance
             if (ge.getRemaining() == 0) {
                 gameDone = true;
             } else {
@@ -104,12 +76,12 @@ public class GameDynamicPresenter extends GamePresenter {
 
     private MultiplayerGame saveGame() {
         MultiplayerGame multiplayerGame = new MultiplayerGame();
-        if (gameEngineDynamics.size() > 1) {
+        if (gameEngineStreaks.size() > 1) {
             multiplayerGame.setId(db.createMultiplayerGame());
         }
 
-        for (GameEngine ge : gameEngineDynamics) {
-            if (gameEngineDynamics.size() > 1) {
+        for (GameEngine ge : gameEngineStreaks) {
+            if (gameEngineStreaks.size() > 1) {
                 ge.getGame().setMultiplayerId(multiplayerGame.getId());
                 multiplayerGame.addGameId(ge.getGame().getId());
             } else {
@@ -130,10 +102,10 @@ public class GameDynamicPresenter extends GamePresenter {
     }
 
     private void openGameStatistics(MultiplayerGame multiplayerGame) {
-        if (gameEngineDynamics.size() == 1) {
+        if (gameEngineStreaks.size() == 1) {
             Intent intent = new Intent(context, GameStatsticsActivity.class);
             intent.putExtra("fromGameActivity", true);
-            intent.putExtra("gameId", gameEngineDynamics.get(0).getGame().getId());
+            intent.putExtra("gameId", gameEngineStreaks.get(0).getGame().getId());
             context.startActivity(intent);
         } else {
 
@@ -146,7 +118,7 @@ public class GameDynamicPresenter extends GamePresenter {
 
     private void startGame() {
         gameStarted = true;
-        for (GameEngine gameEngine : gameEngineDynamics) {
+        for (GameEngine gameEngine : gameEngineStreaks) {
             gameDynamicView.makeButtonsNotClickable(gameEngine);
         }
         gameDynamicView.makeAddButtonHidden();

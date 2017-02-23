@@ -82,6 +82,7 @@
         <activity
             android:name=".Activity.GameDynamicActivity"
             android:label="@string/title_activity_game_dynamic"
+            android:screenOrientation="portrait"
             android:parentActivityName=".Activity.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data

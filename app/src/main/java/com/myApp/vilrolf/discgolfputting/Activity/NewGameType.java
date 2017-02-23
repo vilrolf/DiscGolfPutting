@@ -18,7 +18,6 @@ import com.myApp.vilrolf.discgolfputting.Presenter.NewGameTypePresenter;
 import com.myApp.vilrolf.discgolfputting.R;
 
 public class NewGameType extends AppCompatActivity {
-    private DbHelper mydb;
     private  NewGameTypePresenter newGameTypePresenter;
 
     @Override

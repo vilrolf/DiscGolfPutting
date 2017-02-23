@@ -18,19 +18,15 @@ public class GameEngineDynamic extends GameEngine {
 
     private TextView tvHits;
     private int remaining;
-    private GameType gameType;
+    public GameType gameType;
     private TextView tvRemaining;
-    private Game game;
-    private double currentDistance;
-    private ArrayList<Throw> currentDiscThrows;
-    private int roundNr = 0;
+    Game game;
+    double currentDistance;
+    ArrayList<Throw> currentDiscThrows;
+    int roundNr = 0;
     private TableRow gameRow;
 
-
-    public ArrayList<Throw> getNextRoundThrows() {
-        if (getRemaining() == 0) {
-            return null;
-        }
+    private ArrayList<Throw> getNextRoundDynamic() {
         ArrayList<Throw> roundThrows = new ArrayList<>();
         double score = currentDistance * gameType.getPointsPerDistance();
         for (int i = 0; i < gameType.getNrOfThrowsPerRound(); i++) {
@@ -55,6 +51,16 @@ public class GameEngineDynamic extends GameEngine {
         }
         currentDiscThrows = roundThrows;
         return roundThrows;
+    }
+
+
+    public ArrayList<Throw> getNextRoundThrows() {
+        if (getRemaining() == 0) {
+            return null;
+        }
+
+        return getNextRoundDynamic();
+
     }
 
 
@@ -100,6 +106,7 @@ public class GameEngineDynamic extends GameEngine {
             return String.format("%s",currentDistance);
             */
     }
+
     public void saveThrows() {
         int hits = 0;
         for (Throw th : currentDiscThrows) {

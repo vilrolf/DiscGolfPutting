@@ -39,7 +39,6 @@ public class ChartUtil {
 
             dThrows[th.getRoundNr()]++;
             labels[th.getRoundNr()] = th.getRoundedDistance();
-
         }
 
         for (int i = 0; i < maxValue && dThrows[i] != 0; i++) {
@@ -126,10 +125,10 @@ public class ChartUtil {
     public static LineSet makeDayProgressChart(ArrayList<Game> allGames) {
         LineSet lineSet = new LineSet();
         ArrayList<Double> totalScore = new ArrayList<>();
+        ArrayList<Integer> gamesOnDay = new ArrayList<>();
         ArrayList<String> labels = new ArrayList<>();
         int currentDayOfYear = -1;
         int currentIndex = -1;
-
         for (Game game : allGames) {
             Calendar cal = DateUtil.stringToCal(game.getCreated_at());
             int gameDayOfYear = cal.get(Calendar.DAY_OF_YEAR);
@@ -138,12 +137,14 @@ public class ChartUtil {
                 currentDayOfYear = gameDayOfYear;
                 labels.add("" + gameDayOfYear);
                 currentIndex++;
+                gamesOnDay.add(1);
             } else {
                 totalScore.set(currentIndex,totalScore.get(currentIndex) + game.getScore());
+                gamesOnDay.set(currentIndex, gamesOnDay.get(currentIndex) + 1);
             }
         }
         for(int i = 0; i < totalScore.size(); i++){
-            float value = (float) (double) totalScore.get(i);
+            float value = (float) (double) totalScore.get(i) / gamesOnDay.get(i);
             lineSet.addPoint(labels.get(i),value);
         }
 

@@ -27,9 +27,8 @@ public class Game implements Serializable {
     private int color;
     private TextView tvHits;
     private TextView tvRemaining;
-    private int throwNr;
     private double currentDistance;
-    private int roundNr = 0;
+    private double avgPointPerThrow;
 
     public Game() {
 
@@ -37,6 +36,14 @@ public class Game implements Serializable {
 
     public Game(User user) {
         this.user = user;
+    }
+
+    public double getAvgPointPerThrow() {
+        return avgPointPerThrow;
+    }
+
+    public void setAvgPointPerThrow(double avgPointPerThrow) {
+        this.avgPointPerThrow = avgPointPerThrow;
     }
 
     public Button getBtnScore() {
@@ -268,37 +275,6 @@ public class Game implements Serializable {
 
     public void updateScore() {
         getAndUpdateScore();
-    }
-
-    public void saveThrows(ArrayList<Throw> currentDiscThrows, Context context) {
-        int hits = 0;
-        for (Throw th : currentDiscThrows) {
-            if (th.isHit()) {
-                hits++;
-            }
-        }
-        double hitRate = (double) hits / gameType.getNrOfThrowsPerRound();
-        double downgradeThreshold = 0.4; // GET THIS FROM DATABASE
-        // TODO get this in db
-        double upgradeThreshold = 0.8;
-        if (hitRate < downgradeThreshold) {
-            if (currentDistance != gameType.getStart()) {
-                currentDistance -= gameType.getIncrement();
-                //  Toast.makeText(context, "Shorter distance", Toast.LENGTH_SHORT).show();
-            }
-        } else if (hitRate < upgradeThreshold) {
-            // WE STAY AT THE SAME SPOT! :)
-            // Toast.makeText(context, "Same distance", Toast.LENGTH_SHORT).show();
-        } else {
-            // WE're going up
-            //  Toast.makeText(context, "Longer distance", Toast.LENGTH_SHORT).show();
-            currentDistance += gameType.getIncrement();
-        }
-
-        roundNr++;
-        discThrows.addAll(currentDiscThrows);
-
-
     }
 
     public void updateTextViews() {

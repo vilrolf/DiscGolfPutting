@@ -132,6 +132,7 @@ public class DbHelper extends SQLiteOpenHelper {
             + GAMETYPE_COLUMN_POINTS_PER_DISTANCE + " REAL,"
             + GAMETYPE_COLUMN_GAME_NAME + " TEXT"
             + ");";
+    private ArrayList<Game> allGamesWithThrows;
 
     public DbHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
@@ -169,12 +170,33 @@ public class DbHelper extends SQLiteOpenHelper {
                 db.execSQL("ALTER TABLE " + TABLE_GAME_TYPE + " ADD COLUMN " + GAMETYPE_COLUMN_THRESHOLD_DOWNGRADE + " INTEGER");
                 db.execSQL("ALTER TABLE " + TABLE_GAME_TYPE + " ADD COLUMN " + GAMETYPE_COLUMN_THRESHOLD_UPGRADE + " INTEGER");
             }
-            if ( )
+            if (oldVersion < 30) {
+                db.execSQL("ALTER TABLE " + TABLE_GAME + " ADD COLUMN " + GAME_COLUMN_AVG_POINT_PER_THROW + " REAL");
+            }
 
         }
 
 
         onCreate(db);
+    }
+
+    public void calculateAVGPointPerThrowForEachGame() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ArrayList<Game> allGames = getAllGamesWithThrows();
+        for (Game game : allGames) {
+            double score = 0;
+            for (Throw th : game.getDiscThrows()) {
+                if (th.isHit()) {
+                    score += th.getDistance();
+                }
+            }
+            game.setAvgPointPerThrow(score / game.getDiscThrows().size());
+            ContentValues cv = new ContentValues();
+            cv.put(GAME_COLUMN_AVG_POINT_PER_THROW, game.getAvgPointPerThrow());
+            db.update(TABLE_GAME, cv, KEY_ID + " = " + game.getId(), null);
+        }
+
+
     }
 
     public long createUser(User user) {
@@ -584,13 +606,14 @@ public class DbHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         db.delete(TABLE_GAME_TYPE, KEY_ID + "=" + gameType.getId(), null);
     }
-    public ArrayList<Throw> get7DayStatisticsFromDistance(double distance){
+
+    public ArrayList<Throw> get7DayStatisticsFromDistance(double distance) {
         SQLiteDatabase db = this.getWritableDatabase();
         // TODAY //               SELECT * FROM statistics          WHERE date                          BETWEEN datetime('now', '-6 days') AND datetime('now', 'localtime');
-        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_THROW + " WHERE " + THROW_COLUMN_TIMESTAMP + " BETWEEN datetime('now', '-6 days') AND datetime('now', 'localtime')",null);
+        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_THROW + " WHERE " + THROW_COLUMN_TIMESTAMP + " BETWEEN datetime('now', '-6 days') AND datetime('now', 'localtime')", null);
         ArrayList<Throw> week = new ArrayList<>();
         res.moveToFirst();
-        while(!res.isAfterLast()){
+        while (!res.isAfterLast()) {
             week.add(saveThrow(res));
             res.moveToNext();
         }
@@ -608,12 +631,42 @@ public class DbHelper extends SQLiteOpenHelper {
         gt.setRounds(60 / n);
         gt.setNrOfThrowsPerRound(n);
         gt.setGameMode(2);
-        gt.setThresholdDowngrade(n/2);
-        if(n>=7){
-            gt.setThresholdUpgrade(n -1 );
+        gt.setThresholdDowngrade(n / 2);
+        if (n >= 7) {
+            gt.setThresholdUpgrade(n - 1);
         } else {
             gt.setThresholdUpgrade(n);
         }
+
+        if (distanceMarker.equals("m")) {
+            gt.setStart(3);
+            gt.setPointsPerDistance(3);
+            gt.setIncrement(1);
+        } else {
+            gt.setStart(10);
+            gt.setPointsPerDistance(1);
+            gt.setIncrement(3);
+        }
+        createGameType(gt);
+    }
+
+    public ArrayList<Game> getAllGamesWithThrows() {
+        ArrayList<Game> games = getAllGames();
+        for (Game game : games) {
+            game.setDiscThrows(getThrowsFromGame(game.getId()));
+        }
+        return games;
+    }
+
+    public void createStandardStreakGame(int nrOfThrowsPerRound, String distanceMarker) {
+        GameType gt = new GameType();
+        gt.setGameName("Streak");
+        gt.setAllShotHitBonus(1);
+        gt.setFirstShotMultiplier(1);
+        gt.setLastShotMultiplier(1.2);
+        gt.setRounds(6);
+        gt.setNrOfThrowsPerRound(nrOfThrowsPerRound);
+        gt.setGameMode(3);
 
         if (distanceMarker.equals("m")) {
             gt.setStart(3);

@@ -113,6 +113,7 @@
     <string-array name="gameTypes">
         <item>Normal</item>
         <item>Dynamic</item>
+        <item>Streak</item>
     </string-array>
     <string name="title_activity_multiplayer_game_statistics">MultiplayerGameStatistics</string>
     <string name="hit_perc">Hit %</string>

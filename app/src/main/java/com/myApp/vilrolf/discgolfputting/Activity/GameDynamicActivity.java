@@ -1,31 +1,20 @@
 package com.myApp.vilrolf.discgolfputting.Activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.TableLayout;
 import android.widget.TableRow;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.db.chart.Tools;
 import com.myApp.vilrolf.discgolfputting.Database.DbHelper;
-import com.myApp.vilrolf.discgolfputting.Database.Game;
 import com.myApp.vilrolf.discgolfputting.Database.GameType;
-import com.myApp.vilrolf.discgolfputting.Database.MultiplayerGame;
-import com.myApp.vilrolf.discgolfputting.Database.Throw;
-import com.myApp.vilrolf.discgolfputting.Database.User;
 import com.myApp.vilrolf.discgolfputting.MvpView.GameDynamicView;
 import com.myApp.vilrolf.discgolfputting.Presenter.GameDynamicPresenter;
+import com.myApp.vilrolf.discgolfputting.Presenter.GameDynamicStreakPresenter;
 import com.myApp.vilrolf.discgolfputting.R;
-import com.myApp.vilrolf.discgolfputting.Utils.ColorUtil;
-
-import java.util.ArrayList;
 
 public class GameDynamicActivity extends AppCompatActivity {
     public TableRow userRowNames;
@@ -33,12 +22,10 @@ public class GameDynamicActivity extends AppCompatActivity {
     public TableRow userRowHits;
     public TableRow userRowRemaining;
     public TableLayout gameTable;
-    private DbHelper mydb;
     private GameDynamicPresenter gdp;
-    private int[] colors;
-    private ArrayList<Game> games = new ArrayList<>();
-    private boolean gameStarted = false;
+    private GameDynamicStreakPresenter gdsp;
     private GameDynamicView gdw;
+    private long gameMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,15 +36,16 @@ public class GameDynamicActivity extends AppCompatActivity {
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(view -> {
-            gdp.nextRound();
+            if (gameMode == 2) {
+                gdp.nextRound();
+            } else if (gameMode == 3) {
+                gdsp.nextRound();
+            }
+
         });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         gdw = new GameDynamicView(this);
-
-
-        mydb = new DbHelper(this);
-
-        colors = ColorUtil.getColorArray();
 
         userRowNames = (TableRow) findViewById(R.id.tableRowDynamicGameUsers);
         userRowScores = (TableRow) findViewById(R.id.tableRowDynamicGameUsersScore);
@@ -67,9 +55,23 @@ public class GameDynamicActivity extends AppCompatActivity {
         Button addButton = (Button) findViewById(R.id.buttonDynamicGameAddUser);
         gdw.setUp(userRowNames, userRowScores);
         gdw.setUpDynamic(userRowHits, userRowRemaining, gameTable, addButton);
+        GameType gt = (GameType) getIntent().getSerializableExtra("gameType");
+        gameMode = gt.getGameMode();
 
-        setupGdp();
 
+        if (gameMode == 2) {
+            setupGdp();
+        } else if (gameMode == 3) {
+            setupGameDynamicStreakPresenter();
+        }
+    }
+
+    private void setupGameDynamicStreakPresenter() {
+        gdsp = new GameDynamicStreakPresenter();
+        gdsp.setDb(new DbHelper(this));
+        gdsp.setGdw(gdw);
+        gdsp.setGameType((GameType) getIntent().getSerializableExtra("gameType"));
+        gdsp.setupGdp(this);
     }
 
     private void setupGdp() {
@@ -78,30 +80,13 @@ public class GameDynamicActivity extends AppCompatActivity {
         gdp.setGdw(gdw);
         gdp.setGameType((GameType) getIntent().getSerializableExtra("gameType"));
         gdp.setupGdp(this);
-
-
     }
-
-
-    private void openGameStatistics(MultiplayerGame multiplayerGame) {
-        if (games.size() == 1) {
-            Intent intent = new Intent(this, GameStatsticsActivity.class);
-            intent.putExtra("fromGameActivity", true);
-            intent.putExtra("gameId", games.get(0).getId());
-            startActivity(intent);
-        } else {
-            MultiplayerGame mpg = new MultiplayerGame();
-            mpg.setGamesIds(games);
-            Intent intent = new Intent(this, MultiplayerGameStatistics.class);
-            intent.putExtra("fromGameActivity", true);
-            intent.putExtra("mpg", mpg);
-            startActivity(intent);
-        }
-        ;
-    }
-
 
     public void gameDynamicAddUser(View view) {
-        gdp.newUser();
+        if (gameMode == 2) {
+            gdp.newUser();
+        } else if (gameMode == 3) {
+            gdsp.newUser();
+        }
     }
 }

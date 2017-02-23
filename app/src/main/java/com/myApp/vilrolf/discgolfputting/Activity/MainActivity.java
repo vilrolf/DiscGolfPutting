@@ -28,7 +28,6 @@ public class MainActivity extends AppCompatActivity {
     private Spinner gameTypesSpinner;
     private boolean noGameTypes = false;
     private String distanceMarker;
-    private int nrOfDiscs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
         // SJEKK FOR HVOR MANGE DISCER
         SharedPreferences sharedPref = getSharedPreferences("PREF_DISTANCE", Context.MODE_PRIVATE);
         distanceMarker = sharedPref.getString(getString(R.string.distance_type), "empty");
-        if(distanceMarker.equals("empty")){
+        if (distanceMarker.equals("empty")) {
             createDistanceListDialog();
         }
         checkGameTypes();
@@ -55,10 +54,11 @@ public class MainActivity extends AppCompatActivity {
         gameTypesSpinner = (Spinner) findViewById(R.id.spinnerMainActivityGameTypes);
         boolean hasDynamic = false;
         boolean hasStandard = false;
-        if(gameTypeList.size() == 0){
+        boolean hasStreak = false;
+        if (gameTypeList.size() == 0) {
             createHowManyDiscsDialog();
 
-        } else {
+        } else { // yeh, this is getting stupid now
             for (GameType gameType : gameTypeList) {
                 if (gameType.getGameMode() == 1) {
                     hasStandard = true;
@@ -67,6 +67,9 @@ public class MainActivity extends AppCompatActivity {
                 if (gameType.getGameMode() == 2) {
                     hasDynamic = true;
                 }
+                if (gameType.getGameMode() == 3) {
+                    hasStreak = true;
+                }
             }
             if (!hasDynamic) {
                 mydb.createStandardDynamicGameType((int) gameTypeList.get(0).getNrOfThrowsPerRound(), distanceMarker);
@@ -74,6 +77,10 @@ public class MainActivity extends AppCompatActivity {
             }
             if (!hasStandard) {
                 mydb.createStandardGameType((int) gameTypeList.get(0).getNrOfThrowsPerRound(), distanceMarker);
+                gameTypeList = mydb.getAllGameTypes();
+            }
+            if (!hasStreak) {
+                mydb.createStandardStreakGame((int) gameTypeList.get(0).getNrOfThrowsPerRound(), distanceMarker);
                 gameTypeList = mydb.getAllGameTypes();
             }
 
@@ -194,7 +201,7 @@ public class MainActivity extends AppCompatActivity {
                 createHowManyDiscsDialog();
             } else {
                 GameType selectedGameType = gameTypeList.get(gameTypesSpinner.getSelectedItemPosition());
-                if (selectedGameType.getGameMode() == 2) {
+                if (selectedGameType.getGameMode() >= 2) {
                     Intent intent = new Intent(this, GameDynamicActivity.class);
                     intent.putExtra("gameType", selectedGameType);
                     startActivity(intent);
