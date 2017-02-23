@@ -33,6 +33,7 @@ public class GameDynamicView extends GameView {
     private Button addButton;
     private Context context;
     private GameDynamicPresenter gameDynamicPresenter;
+    private GameEngineDynamic allRowChecked;
 
     public GameDynamicView(Context context) {
         super(context);
@@ -71,17 +72,29 @@ public class GameDynamicView extends GameView {
         tvDistance.setTextSize(Tools.fromDpToPx(10));
         tvDistance.setPadding(0, 0, 10, 0);
         tr.addView(tvDistance);
+
+        ged.checkBoxes = new ArrayList<>();
+
         for (Throw dthrow : ged.getCurrentDiscThrows()) {
             CheckBox cb = new CheckBox(context);
             cb.setTag(dthrow);
-            cb.setButtonDrawable(R.drawable.custom_checkbox_design_big);
+            cb.setButtonDrawable(R.drawable.custom_checkbox_design_medium);
             cb.setOnClickListener(v -> {
                 CheckBox checkBox = (CheckBox) v;
                 Throw th = (Throw) v.getTag();
                 th.setHit((checkBox.isChecked()));
             });
             tr.addView(cb);
+            ged.checkBoxes.add(cb);
         }
+        Button allHitButton = new Button(context);
+        allHitButton.setText(R.string.All);
+        allHitButton.setOnClickListener(v -> {
+            gameDynamicPresenter.setAllHitRound(ged);
+        }
+        );
+        tr.addView(allHitButton);
+
         ged.setGameRow(tr);
         gameTable.addView(tr);
 
@@ -189,5 +202,9 @@ public class GameDynamicView extends GameView {
         ge.getTvRemaining().setText(Integer.toString(ge.getRemaining()));
     }
 
-
+    public void makeRowChecked(GameEngineDynamic ged) {
+        for(CheckBox cb : ged.checkBoxes){
+            cb.setChecked(true);
+        }
+    }
 }

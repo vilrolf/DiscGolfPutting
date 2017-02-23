@@ -4,17 +4,15 @@ import com.myApp.vilrolf.discgolfputting.Database.Throw;
 
 import java.util.ArrayList;
 
-/**
- * Created by Viljar on 22-Feb-17.
- */
 
 public class GameEngineStreak extends GameEngineDynamic {
-    long discsLeft = -1;
+    private long discsLeft = -1;
+
     public ArrayList<Throw> getNextRoundThrows() {
         if (discsLeft == 0) {
             return null;
         }
-        if(discsLeft == -1){
+        if (discsLeft == -1) {
             discsLeft = gameType.getNrOfThrowsPerRound();
         }
         ArrayList<Throw> roundThrows = new ArrayList<>();
@@ -44,7 +42,8 @@ public class GameEngineStreak extends GameEngineDynamic {
         return roundThrows;
 
     }
-    public int getRemaining(){
+
+    public int getRemaining() {
         return (int) discsLeft;
     }
 

@@ -282,7 +282,7 @@ public class DbHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor res = db.rawQuery("select * from " + TABLE_USER, null);
         res.moveToFirst();
-        while (res.isAfterLast() == false) {
+        while (!res.isAfterLast()) {
             User user = new User();
             user.setId(res.getLong(res.getColumnIndex(KEY_ID)));
             user.setName(res.getString(res.getColumnIndex(USER_COLUMN_NAME)));
@@ -290,15 +290,16 @@ public class DbHelper extends SQLiteOpenHelper {
             res.moveToNext();
         }
 
+        res.close();
         return users;
 
     }
 
     /***
-     * 0 = ALL, 1 = YEAR, 2 = MONTH, 3 = WEEK, 4 = DAY
+     * 0 = ALL, 1 = YEAR, 2 = MONTH, 3 = WEEK, 4 = DAY NOT REALLY DOING ANYTHING NOW I THINK
      *
      * @param timeSort
-     * @return
+     * @return uh
      */
     public long getNrOfHits(int timeSort) {
         //TODO think this is working. Kinda boring to do without data though.
@@ -318,6 +319,7 @@ public class DbHelper extends SQLiteOpenHelper {
             Throw th = new Throw();
             res.moveToNext();
         }
+        res.close();
         return null;
     }
 
@@ -347,6 +349,7 @@ public class DbHelper extends SQLiteOpenHelper {
             distances[res.getPosition()] = res.getDouble(res.getColumnIndex(THROW_COLUMN_DISTANCE));
             res.moveToNext();
         }
+        res.close();
         return distances;
     }
 
@@ -404,7 +407,7 @@ public class DbHelper extends SQLiteOpenHelper {
         res.moveToFirst();
 
 
-        while (res.isAfterLast() == false) {
+        while (!res.isAfterLast()) {
             games.add(saveGame(res));
         }
 
@@ -557,7 +560,7 @@ public class DbHelper extends SQLiteOpenHelper {
             allMultiplayerGames.add(mpg);
             res.moveToNext();
         }
-
+        res.close();
         for (MultiplayerGame mpg : allMultiplayerGames) {
             Cursor resGame = db.rawQuery("SELECT * FROM " + TABLE_GAME + " WHERE " + GAME_COLUMN_FOREIGN_MULTPLAYER_GAME + " = " + mpg.getId(), null);
             resGame.moveToFirst();
@@ -568,6 +571,7 @@ public class DbHelper extends SQLiteOpenHelper {
             for (Game game : mpg.getGames()) {
                 game.setUser(getUserFromId(game.getUserId()));
             }
+            resGame.close();
 
         }
 

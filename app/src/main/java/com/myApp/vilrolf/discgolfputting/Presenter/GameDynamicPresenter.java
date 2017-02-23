@@ -152,4 +152,9 @@ public class GameDynamicPresenter extends GamePresenter {
         gameDynamicView.makeAddButtonHidden();
 
     }
+
+    public void setAllHitRound(GameEngineDynamic ged) {
+        ged.setAllHitRow();
+        gameDynamicView.makeRowChecked(ged);
+    }
 }

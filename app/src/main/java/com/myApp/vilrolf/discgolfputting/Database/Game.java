@@ -8,10 +8,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
+ * Game game game.
  * Created by Viljar on 20-Sep-16.
  */
 public class Game implements Serializable {
-    public ArrayList<Throw> currentDiscThrows = new ArrayList<>();
+    private  ArrayList<Throw> currentDiscThrows = new ArrayList<>();
     private long id;
     private GameType gameType;
     private String created_at;
@@ -69,6 +70,7 @@ public class Game implements Serializable {
 
     public void setUpThrows() {
         if (gameType.getGameMode() == 2) {
+            // THIS IS ALL GOING AWAY
 
         } else {
             for (int i = 0; i < gameType.getRounds(); i++) {
@@ -133,7 +135,7 @@ public class Game implements Serializable {
     }
 
     public String getRoundedScore() {
-        return String.format("%.1f", score);
+        return String.format("%.1f", score); // TODO CHANGE TO LOCALE
     }
 
     public String getRoundedPPT() {

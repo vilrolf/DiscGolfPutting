@@ -1,5 +1,6 @@
 package com.myApp.vilrolf.discgolfputting.Engine;
 
+import android.widget.CheckBox;
 import android.widget.TableRow;
 import android.widget.TextView;
 
@@ -18,6 +19,7 @@ public class GameEngineDynamic extends GameEngine {
 
     private TextView tvHits;
     private int remaining;
+    public ArrayList<CheckBox> checkBoxes;
     public GameType gameType;
     private TextView tvRemaining;
     Game game;
@@ -138,5 +140,12 @@ public class GameEngineDynamic extends GameEngine {
 
     public void setGameRow(TableRow gameRow) {
         this.gameRow = gameRow;
+    }
+
+    public void setAllHitRow() {
+        for(Throw th : currentDiscThrows){
+            th.setHit(true);
+
+        }
     }
 }

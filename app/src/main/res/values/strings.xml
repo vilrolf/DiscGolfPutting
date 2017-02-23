@@ -132,4 +132,5 @@
     <string name="disc_golf_putting">Disc Golf Putting</string>
     <string name="upgrade_error">Upgrade threshold can not be higher then number of throws per round</string>
     <string name="downgrade_error">Downgrade threshold can not be higher then nr of throws per round</string>
+    <string name="All">All</string>
 </resources>

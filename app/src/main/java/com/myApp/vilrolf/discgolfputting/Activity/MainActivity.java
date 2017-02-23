@@ -95,21 +95,19 @@ public class MainActivity extends AppCompatActivity {
         final EditText input = new EditText(this);
         input.setInputType(InputType.TYPE_CLASS_TEXT);
         alert.setView(input);
-        alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                String value = input.getText().toString();
-                if (value.equals("")) {
-                    // ERROR
-                    Toast.makeText(MainActivity.this, "You need to enter a username", Toast.LENGTH_SHORT).show();
-                    alert.show();
-                } else {
-                    User user = new User(value);
-                    user.setId(mydb.createUser(new User(value)));
-                    mydb.setAllGamesToUser(user);
-                    Toast.makeText(MainActivity.this, "User created", Toast.LENGTH_SHORT).show();
-                }
-
+        alert.setPositiveButton("Ok", (dialog, whichButton) -> {
+            String value = input.getText().toString();
+            if (value.equals("")) {
+                // ERROR
+                Toast.makeText(MainActivity.this, "You need to enter a username", Toast.LENGTH_SHORT).show();
+                alert.show();
+            } else {
+                User user = new User(value);
+                user.setId(mydb.createUser(new User(value)));
+                mydb.setAllGamesToUser(user);
+                Toast.makeText(MainActivity.this, "User created", Toast.LENGTH_SHORT).show();
             }
+
         });
         alert.show();
     }
@@ -120,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 0; i < gameTypeNames.length; i++) {
             gameTypeNames[i] = gameTypeList.get(i).getDisplayName();
         }
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, gameTypeNames);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, gameTypeNames);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         return adapter;
 
@@ -129,25 +127,22 @@ public class MainActivity extends AppCompatActivity {
     public void createDistanceListDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.imperial_or_metric)
-                .setItems(R.array.distance_types, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        // The 'which' argument contains the index position
-                        // of the selected item
+                .setItems(R.array.distance_types, (dialog, which) -> {
+                    // The 'which' argument contains the index position
+                    // of the selected item
 
-                        SharedPreferences sharedPref = getSharedPreferences("PREF_DISTANCE", Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = sharedPref.edit();
-                        // HACK
-                        String distanceMarker = "ft";
-                        if (which == 1) {
-                            distanceMarker = "m";
+                    SharedPreferences sharedPref = getSharedPreferences("PREF_DISTANCE", Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPref.edit();
+                    // HACK
+                    String distanceMarker1 = "ft";
+                    if (which == 1) {
+                        distanceMarker1 = "m";
 
-                        }
-                        editor.putString(getString(R.string.distance_type), distanceMarker);
-                        editor.apply();
-                        if (noGameTypes) {
-                            createHowManyDiscsDialog();
-                        }
-
+                    }
+                    editor.putString(getString(R.string.distance_type), distanceMarker1);
+                    editor.apply();
+                    if (noGameTypes) {
+                        createHowManyDiscsDialog();
                     }
 
                 });
