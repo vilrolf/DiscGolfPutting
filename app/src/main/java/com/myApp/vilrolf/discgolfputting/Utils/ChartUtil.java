@@ -5,6 +5,7 @@ import android.graphics.Paint;
 
 import com.db.chart.Tools;
 import com.db.chart.animation.Animation;
+import com.db.chart.model.ChartSet;
 import com.db.chart.model.LineSet;
 import com.db.chart.view.LineChartView;
 import com.myApp.vilrolf.discgolfputting.Database.Game;
@@ -124,6 +125,7 @@ public class ChartUtil {
 
     public static LineSet makeDayProgressChart(ArrayList<Game> allGames) {
         LineSet lineSet = new LineSet();
+        lineSet.setDotsRadius(Tools.fromDpToPx(7.0f));
         ArrayList<Double> totalScore = new ArrayList<>();
         ArrayList<Integer> gamesOnDay = new ArrayList<>();
         ArrayList<String> labels = new ArrayList<>();
@@ -133,13 +135,13 @@ public class ChartUtil {
             Calendar cal = DateUtil.stringToCal(game.getCreated_at());
             int gameDayOfYear = cal.get(Calendar.DAY_OF_YEAR);
             if(gameDayOfYear != currentDayOfYear){ // we're at a new day
-                totalScore.add(game.getScore());
+                totalScore.add(game.getAvgPointPerThrow());
                 currentDayOfYear = gameDayOfYear;
                 labels.add("" + gameDayOfYear);
                 currentIndex++;
                 gamesOnDay.add(1);
             } else {
-                totalScore.set(currentIndex,totalScore.get(currentIndex) + game.getScore());
+                totalScore.set(currentIndex,totalScore.get(currentIndex) + game.getAvgPointPerThrow());
                 gamesOnDay.set(currentIndex, gamesOnDay.get(currentIndex) + 1);
             }
         }
@@ -172,12 +174,9 @@ public class ChartUtil {
             int day = cal.get(Calendar.DAY_OF_WEEK);
             hitsOnDay[day]++; // Guessing sunday is 0.. sunday is 1, sat is 7
 
-
             String dayLongName = cal.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.getDefault());
 
-
         }
-
         // my hack to
         for (int i = 6; i > -1; i--) {
             String l = labels[days[i]];
@@ -188,4 +187,29 @@ public class ChartUtil {
         return lineSet;
     }
 
+    public static LineSet makeAllGamesProgressChart(ArrayList<Game> activeGames) {
+
+        LineSet lineSet = new LineSet();
+
+        for(Game game : activeGames){
+            lineSet.addPoint("" + game.getId(), (float) game.getAvgPointPerThrow());
+        }
+        return lineSet;
+
+    }
+
+    public static double addMakeAllGameProgressChart(ArrayList<Game> activeGames, LineChartView lineChartView) {
+        LineSet lineSet = new LineSet();
+        lineSet.setDotsRadius(Tools.fromDpToPx(7.0f));
+        double max = 0;
+        for(Game game : activeGames){
+            if(game.getAvgPointPerThrow() > max) {
+                max = game.getAvgPointPerThrow();
+            }
+            lineSet.addPoint("" + game.getId(), (float) game.getAvgPointPerThrow());
+
+        }
+        lineChartView.addData(lineSet);
+        return max;
+    }
 }

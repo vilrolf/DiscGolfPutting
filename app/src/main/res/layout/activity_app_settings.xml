@@ -38,14 +38,4 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="32dp" />
 
-    <Button
-        android:text="Progress"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/buttonGameTypeList"
-        android:layout_alignLeft="@+id/buttonUserList"
-        android:layout_alignStart="@+id/buttonUserList"
-        android:id="@+id/buttonProgress"
-        android:onClick="goToProgress" />
-
 </RelativeLayout>

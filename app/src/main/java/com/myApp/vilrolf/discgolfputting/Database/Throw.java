@@ -68,11 +68,7 @@ public class Throw implements Serializable {
     }
 
     public void setHit(long hit) {
-        if (hit == 1) {
-            this.hit = true;
-        } else {
-            this.hit = false;
-        }
+        this.hit = hit == 1;
     }
 
     public long getGameId() {

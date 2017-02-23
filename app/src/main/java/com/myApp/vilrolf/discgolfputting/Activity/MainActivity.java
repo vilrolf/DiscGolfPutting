@@ -232,4 +232,9 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, AppSettingsActivity.class);
         startActivity(intent);
     }
+
+    public void goToProgress(View view) {
+        Intent intent = new Intent(this, ProgressActivity.class);
+        startActivity(intent);
+    }
 }

@@ -193,7 +193,8 @@ public class DbHelper extends SQLiteOpenHelper {
             game.setAvgPointPerThrow(score / game.getDiscThrows().size());
             ContentValues cv = new ContentValues();
             cv.put(GAME_COLUMN_AVG_POINT_PER_THROW, game.getAvgPointPerThrow());
-            db.update(TABLE_GAME, cv, KEY_ID + " = " + game.getId(), null);
+            int r =   db.update(TABLE_GAME, cv, KEY_ID + " = " + game.getId(), null);
+            int a = r+1+2+3;
         }
 
 
@@ -253,6 +254,14 @@ public class DbHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues cv = new ContentValues();
+        if(game.getAvgPointPerThrow() == -1){
+            boolean sucsess =  game.updateAvgPointPerThrow();
+            if(!sucsess){
+                game.setDiscThrows(getThrowsFromGame(game.getId()));
+                game.updateAvgPointPerThrow();
+            }
+        }
+        cv.put(GAME_COLUMN_AVG_POINT_PER_THROW,game.getAvgPointPerThrow());
         cv.put(GAME_COLUMN_GAME_TYPE, game.getGameType().getId());
         cv.put(GAME_COLUMN_SCORE, game.getScore());
         cv.put(GAME_COLUMN_FOREIGN_MULTPLAYER_GAME, game.getMultiplayerId());
@@ -402,7 +411,7 @@ public class DbHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor res = db.rawQuery("SELECT datetime(timestamp, 'localtime') AS timestamp, "
-                        + GAME_COLUMN_GAME_TYPE + "," + GAME_COLUMN_SCORE + "," + GAME_COLUMN_FOREIGN_MULTPLAYER_GAME + "," + GAME_COLUMN_FOREIGN_USER_ID + "," + KEY_ID + "," + GAME_COLUMN_FOREIGN_MULTPLAYER_GAME + " FROM " + TABLE_GAME
+                         + GAME_COLUMN_AVG_POINT_PER_THROW  + "," + GAME_COLUMN_GAME_TYPE + "," + GAME_COLUMN_SCORE + "," + GAME_COLUMN_FOREIGN_MULTPLAYER_GAME + "," + GAME_COLUMN_FOREIGN_USER_ID + "," + KEY_ID + "," + GAME_COLUMN_FOREIGN_MULTPLAYER_GAME + " FROM " + TABLE_GAME
                 , null);
         res.moveToFirst();
 
@@ -444,7 +453,8 @@ public class DbHelper extends SQLiteOpenHelper {
         Game game = new Game();
         game.setId(res.getLong(res.getColumnIndex(KEY_ID)));
         game.setUserId(res.getLong(res.getColumnIndex(GAME_COLUMN_FOREIGN_USER_ID)));
-        game.setScore(res.getLong(res.getColumnIndex(GAME_COLUMN_SCORE)));
+        game.setScore(res.getDouble(res.getColumnIndex(GAME_COLUMN_SCORE)));
+        game.setAvgPointPerThrow(res.getDouble(res.getColumnIndex(GAME_COLUMN_AVG_POINT_PER_THROW)));
         game.setGameTypeId((int) res.getLong(res.getColumnIndex(GAME_COLUMN_GAME_TYPE)));
         game.setMultiplayerId(res.getLong(res.getColumnIndex(GAME_COLUMN_FOREIGN_MULTPLAYER_GAME)));
         game.setCreated_at(res.getString(res.getColumnIndex(GAME_COLUMN_TIMESTAMP)));

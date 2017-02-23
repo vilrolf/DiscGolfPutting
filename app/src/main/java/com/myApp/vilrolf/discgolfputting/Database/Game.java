@@ -28,8 +28,7 @@ public class Game implements Serializable {
     private int color;
     private TextView tvHits;
     private TextView tvRemaining;
-    private double currentDistance;
-    private double avgPointPerThrow;
+    private double avgPointPerThrow = -1;
 
     public Game() {
 
@@ -45,6 +44,27 @@ public class Game implements Serializable {
 
     public void setAvgPointPerThrow(double avgPointPerThrow) {
         this.avgPointPerThrow = avgPointPerThrow;
+    }
+
+    /**
+     *
+     * @return True if has discThrows, False if it does not have Discthrows.
+     */
+    public boolean updateAvgPointPerThrow(){
+        if(discThrows.size() != 0){
+            double score = 0;
+            for (Throw th : discThrows) {
+                if (th.isHit()) {
+                    score += th.getDistance();
+                }
+            }
+            avgPointPerThrow = (score / discThrows.size());
+            return true;
+        } else {
+            return false;
+        }
+
+
     }
 
     public Button getBtnScore() {
@@ -177,7 +197,6 @@ public class Game implements Serializable {
     }
 
     public void setGameType(GameType gameType) {
-        this.currentDistance = gameType.getStart();
         this.gameType = gameType;
     }
 
@@ -202,7 +221,7 @@ public class Game implements Serializable {
         if (user == null) {
             return id + " : " + score;
         } else {
-            return id + " : " + score + " - " + user.getName();
+            return id + " : " + getRoundedScore() + " - " + user.getName();
         }
 
     }

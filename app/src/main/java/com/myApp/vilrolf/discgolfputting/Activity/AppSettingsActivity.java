@@ -75,8 +75,4 @@ public class AppSettingsActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void goToProgress(View view) {
-        Intent intent = new Intent(this, ProgressActivity.class);
-        startActivity(intent);
-    }
 }

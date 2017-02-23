@@ -12,28 +12,10 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="List"
-        android:id="@+id/buttonMainList"
-        android:onClick="goToDbTest"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/statistics"
-        android:id="@+id/buttonMainStatistics"
-        android:onClick="goToStatistics"
-        android:layout_below="@+id/buttonMainList"
-        android:layout_centerHorizontal="true" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:text="@string/title_activity_new_game_type"
         android:id="@+id/buttonNewGameType"
         android:onClick="goToGameNewGameType"
-        android:layout_below="@+id/buttonMainStatistics"
+        android:layout_below="@+id/buttonMainProgress"
         android:layout_centerHorizontal="true" />
 
     <TextView
@@ -66,9 +48,38 @@
         android:layout_height="wrap_content"
         android:text="@string/new_game"
         android:id="@+id/button2"
-        android:nestedScrollingEnabled="false"
         android:onClick="goToGameActivity"
         android:layout_above="@+id/buttonMainList"
         android:layout_centerHorizontal="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="List"
+        android:id="@+id/buttonMainList"
+        android:onClick="goToDbTest"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/buttonMainProgress" />
+
+    <Button
+        android:text="Progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/button2"
+        android:onClick="goToProgress"
+        android:layout_alignRight="@+id/button2"
+        android:layout_alignEnd="@+id/button2"
+        android:id="@+id/buttonMainProgress" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/statistics"
+        android:id="@+id/buttonMainStatistics"
+        android:onClick="goToStatistics"
+        android:layout_alignBaseline="@+id/buttonMainProgress"
+        android:layout_alignBottom="@+id/buttonMainProgress"
+        android:layout_toRightOf="@+id/buttonMainSettings"
+        android:layout_toEndOf="@+id/buttonMainSettings" />
 
 </RelativeLayout>

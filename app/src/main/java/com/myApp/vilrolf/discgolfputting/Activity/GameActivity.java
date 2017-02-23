@@ -310,7 +310,7 @@ public class GameActivity extends AppCompatActivity {
             Intent intent = new Intent(this, MultiplayerGameStatistics.class);
             intent.putExtra("mpg", mpg);
             startActivity(intent);
-        };
+        }
     }
 
 
