@@ -94,14 +94,14 @@ public class StatisticsActivity extends AppCompatActivity {
         selectedSortingMethod = v;
         if (v == 0) {
             activeThrows = allThrows;
-        } else if (v == 2) {
+        } else if (v == 1) {
             activeThrows = new ArrayList<>();
             for (Throw th : allThrows) {
                 if (th.getCalendar().get(Calendar.DAY_OF_YEAR) >= (currentDay - 30)) {
                     activeThrows.add(th);
                 }
             }
-        } else if (v == 3) {
+        } else if (v == 2) {
             activeThrows = new ArrayList<>();
             for (Throw th : allThrows) {
                 if (th.getCalendar().get(Calendar.DAY_OF_YEAR) >= (currentDay - 7)) {
@@ -109,7 +109,7 @@ public class StatisticsActivity extends AppCompatActivity {
                 }
             }
 
-        } else if (v == 4) {
+        } else if (v == 3) {
             activeThrows = new ArrayList<>();
             for (Throw th : allThrows) {
                 if (th.getCalendar().get(Calendar.DAY_OF_YEAR) == (currentDay)) {
@@ -206,8 +206,8 @@ public class StatisticsActivity extends AppCompatActivity {
         tableLayout.addView(tableRowAll);
 
         //1ste kast
-        long nrOfHitsType1 = mydb.getNrOfHitsWithType(1);
-        long nrOfThrowType1 = mydb.getNrOfThrowsWithType(1);
+        long nrOfHitsType1 = se.hitsType[1];
+        long nrOfThrowType1 = se.throwType[1];
         double type1Perc = ((double) nrOfHitsType1 / (double) nrOfThrowType1) * 100;
 
         TableRow tv1ThrowRow = new TableRow(this);
@@ -231,8 +231,8 @@ public class StatisticsActivity extends AppCompatActivity {
         tableLayout.addView(tv1ThrowRow);
 
         //siste kast
-        long nrOfHitsType2 = mydb.getNrOfHitsWithType(2);
-        long nrOfThrowType2 = mydb.getNrOfThrowsWithType(2);
+        long nrOfHitsType2 = se.hitsType[2];
+        long nrOfThrowType2 = se.throwType[2];
         double type2Perc = ((double) nrOfHitsType2 / (double) nrOfThrowType2) * 100;
 
         TableRow tv2ThrowRow = new TableRow(this);
@@ -256,8 +256,8 @@ public class StatisticsActivity extends AppCompatActivity {
         tableLayout.addView(tv2ThrowRow);
 
         //midten
-        long nrOfHitsType0 = mydb.getNrOfHitsWithType(0);
-        long nrOfThrowType0 = mydb.getNrOfThrowsWithType(0);
+        long nrOfHitsType0 = se.hitsType[0];
+        long nrOfThrowType0 = se.throwType[0];
         double type0Perc = ((double) nrOfHitsType0 / (double) nrOfThrowType0) * 100;
 
         TableRow tv0ThrowRow = new TableRow(this);

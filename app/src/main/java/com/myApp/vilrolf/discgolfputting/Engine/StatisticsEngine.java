@@ -14,10 +14,13 @@ public class StatisticsEngine {
     public ArrayList<Double> distances = new ArrayList<>();
     public ArrayList<Integer> hitsFromDistances = new ArrayList<>();
     public ArrayList<Integer> amountOfThrowsFromDistances = new ArrayList<>();
+    public int[] hitsType = new int[3];
+    public int[] throwType = new int[3];
 
     public StatisticsEngine(ArrayList<Throw> activeThrows) {
         for (Throw th : activeThrows) {
             amountOfThrows++;
+            throwType[th.getType()]++;
             int i;
             if (!distances.contains(th.getDistance())) {
                 distances.add(th.getDistance());
@@ -30,6 +33,7 @@ public class StatisticsEngine {
             }
 
             if (th.isHit()) {
+                hitsType[th.getType()]++;
                 hits++;
                 hitsFromDistances.set(i, hitsFromDistances.get(i) + 1);
             }
