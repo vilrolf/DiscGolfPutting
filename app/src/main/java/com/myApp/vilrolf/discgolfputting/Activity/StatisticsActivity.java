@@ -59,8 +59,6 @@ public class StatisticsActivity extends AppCompatActivity {
            // setupContent();
             allThrows = mydb.getAllThrows();
         }
-
-
     }
 
     private void loadSpinners() {
