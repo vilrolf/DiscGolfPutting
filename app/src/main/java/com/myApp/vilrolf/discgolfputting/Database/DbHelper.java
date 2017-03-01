@@ -318,18 +318,20 @@ public class DbHelper extends SQLiteOpenHelper {
         return DatabaseUtils.queryNumEntries(db, TABLE_THROW, THROW_COLUMN_HIT + " = 1");
     }
 
-    public List<Throw> getAllThrows() {
+    public ArrayList<Throw> getAllThrows() {
         //TODO its not done mate!
+        ArrayList<Throw> throwArrayList = new ArrayList<>();
         SQLiteDatabase db = this.getWritableDatabase();
         // SELECT * FROM statistics WHERE date BETWEEN datetime('now', 'start of day') AND datetime('now', 'localtime');
         Cursor res = db.rawQuery("select * from " + TABLE_THROW, null);
         res.moveToFirst();
         while (!res.isAfterLast()) {
-            Throw th = new Throw();
+            throwArrayList.add(saveThrow(res));
+
             res.moveToNext();
         }
         res.close();
-        return null;
+        return throwArrayList;
     }
 
     public long getNrOfThrows() {
@@ -485,7 +487,7 @@ public class DbHelper extends SQLiteOpenHelper {
         db.delete(TABLE_GAME, KEY_ID + "=" + id, null);
     }
 
-    public boolean isGames() {
+    public boolean hasGames() {
 
         //TODO HAS TO BE A BETTER WAY!?
         List<Game> games = getAllGames();
@@ -695,4 +697,27 @@ public class DbHelper extends SQLiteOpenHelper {
         createGameType(gt);
         return gt;
     }
+
+    /**
+     * 0 = all , 1 = year, 2 = month, 3 = week, 4 = day
+     * @param time
+     * @param user, if null Selects all users
+     * @return
+     */
+    public ArrayList<Throw> getAllThrowsFromUserInTimePeriod(int time, User user) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        // TODAY //               SELECT * FROM statistics          WHERE date                          BETWEEN datetime('now', '-6 days') AND datetime('now', 'localtime');
+
+
+        if(user == null){
+            if(time == 0){
+                return getAllThrows();
+            }
+            else if(time == 1) {
+                Cursor res = db.rawQuery("SELECT * FROM " + TABLE_THROW + " WHERE " + THROW_COLUMN_TIMESTAMP + " BETWEEN datetime('now', '-6 days') AND datetime('now', 'localtime')", null);
+            }
+        }
+        return null;
+    }
+
 }

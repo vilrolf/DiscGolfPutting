@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TableLayout;
@@ -14,11 +16,15 @@ import com.db.chart.animation.Animation;
 import com.db.chart.view.LineChartView;
 import com.myApp.vilrolf.discgolfputting.Database.DbHelper;
 import com.myApp.vilrolf.discgolfputting.Database.GameType;
+import com.myApp.vilrolf.discgolfputting.Database.Throw;
+import com.myApp.vilrolf.discgolfputting.Engine.StatisticsEngine;
 import com.myApp.vilrolf.discgolfputting.R;
 import com.myApp.vilrolf.discgolfputting.Utils.ChartUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 
 public class StatisticsActivity extends AppCompatActivity {
     DbHelper mydb;
@@ -28,6 +34,12 @@ public class StatisticsActivity extends AppCompatActivity {
     private int selectedSortingMethod = 0; // 0 = ALL, 1 = YEAR, 2 = MONTH, 3 = WEEK, 4 = DAY
     private String distanceMarker;
     private ArrayList<GameType> gameTypes;// = new ArrayList<>();
+    private ArrayList<Throw> allThrows;
+    private ArrayList<Throw> activeThrows;
+    private TableLayout tableLayout1;
+    private TableLayout tableLayout2;
+    private LineChartView lineChartView;
+    StatisticsEngine se;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,12 +49,17 @@ public class StatisticsActivity extends AppCompatActivity {
         spinnerSortTime = (Spinner) findViewById(R.id.spinnerStatisticsSortTime);
         mydb.getAllGameTypes();
 
+        tableLayout1 = (TableLayout) findViewById(R.id.tableLayoutStatistics1);
+        tableLayout2 = (TableLayout) findViewById(R.id.tableLayoutStatistics2);
+        lineChartView = (LineChartView) findViewById(R.id.lineChartStatisticsActivity);
         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
         distanceMarker = sharedPref.getString(getString(R.string.distance_type), "");
-        if (mydb.isGames()) {
+        if (mydb.hasGames()) {
             loadSpinners();
-            setupContent();
+           // setupContent();
+            allThrows = mydb.getAllThrows();
         }
+
 
     }
 
@@ -51,14 +68,17 @@ public class StatisticsActivity extends AppCompatActivity {
                 R.array.sortOptionsTime, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerSortTime.setAdapter(adapter);
-/*
-        spinnerSortTime.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        spinnerSortTime.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 changeSelectedMethod(position);
             }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
         });
-        */
 
 
         ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(this,
@@ -69,26 +89,58 @@ public class StatisticsActivity extends AppCompatActivity {
     }
 
     private void changeSelectedMethod(int v) {
+        Calendar c = Calendar.getInstance();
+        Date now = new Date();
+        c.setTime(now);
+        int currentDay = c.get(Calendar.DAY_OF_YEAR);
         selectedSortingMethod = v;
+        if (v == 0) {
+            activeThrows = allThrows;
+        } else if (v == 2) {
+            activeThrows = new ArrayList<>();
+            for (Throw th : allThrows) {
+                if (th.getCalendar().get(Calendar.DAY_OF_YEAR) >= (currentDay - 30)) {
+                    activeThrows.add(th);
+                }
+            }
+        } else if (v == 3) {
+            activeThrows = new ArrayList<>();
+            for (Throw th : allThrows) {
+                if (th.getCalendar().get(Calendar.DAY_OF_YEAR) >= (currentDay - 7)) {
+                    activeThrows.add(th);
+                }
+            }
+
+        } else if (v == 4) {
+            activeThrows = new ArrayList<>();
+            for (Throw th : allThrows) {
+                if (th.getCalendar().get(Calendar.DAY_OF_YEAR) == (currentDay)) {
+                    activeThrows.add(th);
+                }
+            }
+        } else {
+            activeThrows = allThrows;
+        }
         setupContent();
     }
 
     private void setupContent() {
-        TextView tv = new TextView(this);
-        TableLayout tableLayout1 = (TableLayout) findViewById(R.id.tableLayoutStatistics1);
-        TableLayout tableLayout2 = (TableLayout) findViewById(R.id.tableLayoutStatistics2);
+        se = new StatisticsEngine(activeThrows);
         // First second last etc
+        tableLayout1.removeAllViews();
         setupStaticTableData(tableLayout1);
         // different distances
+        tableLayout2.removeAllViews();
         setupDynamicTableData(tableLayout2);
-
+        lineChartView.invalidate();
+        lineChartView.reset();
         setupLineChart();
 
     }
 
     private void setupLineChart() {
 
-        LineChartView lineChartView = (LineChartView) findViewById(R.id.lineChartStatisticsActivity);
+
         lineChartView = ChartUtil.setupLineChart(lineChartView, lineChartLabels, lineChartValues);
         Animation anim = ChartUtil.getAnimation();
         lineChartView.show(anim);
@@ -97,14 +149,14 @@ public class StatisticsActivity extends AppCompatActivity {
 
     private void setupDynamicTableData(TableLayout tableLayout) {
 
-        double[] distances = mydb.getAllDifferentDistancesUsed();
+        double[] distances = se.getAllDifferentDistancesUsed();
 
         Arrays.sort(distances);
         lineChartValues = new float[distances.length];
         lineChartLabels = new String[distances.length];
         for (int i = 0; i < distances.length; i++) {
-            long nrOfHits = mydb.getNrOfHitsFromDistance(distances[i]);
-            long nrOfThrows = mydb.getNrOfThrowsFromDistance(distances[i]);
+            long nrOfHits = se.getNrOfHitsFromDistance(i);
+            long nrOfThrows = se.getNrOfThrowsFromDistance(i);
             double hitPerc = ((double) nrOfHits / (double) nrOfThrows) * 100;
 
             lineChartLabels[i] = Double.toString(distances[i]);
@@ -132,8 +184,8 @@ public class StatisticsActivity extends AppCompatActivity {
     }
 
     private void setupStaticTableData(TableLayout tableLayout) {
-        long nrOfHits = mydb.getNrOfHits(0);
-        long nrOfThrows = mydb.getNrOfThrows();
+        long nrOfHits = se.getNrOfHits();
+        long nrOfThrows = se.getNrOfThrows();
 
         TableRow tableRowAll = new TableRow(this);
 

@@ -80,7 +80,9 @@ public class GameView {
         newScoreTextView.setTextSize(Tools.fromDpToPx(15));
         newScoreTextView.setTextColor(ge.getColor());
         newScoreTextView.setText("" + ge.getScore());
+        newScoreTextView.setId((int) ge.getUser().getId() + 100);
         ge.setTvScore(newScoreTextView);
+
         userRowScores.addView(newScoreTextView, gamePresenter.activeUsers.size());
     }
 

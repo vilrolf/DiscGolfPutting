@@ -67,6 +67,7 @@ public class GameDynamicView extends GameView {
     public void createRound(GameEngineDynamic ged) {
         TableRow tr = new TableRow(context);
         TextView tvDistance = new TextView(context);
+       // tvDistance.setId();
         tvDistance.setText("" + ged.getCurrentDistanceRounded());
         tvDistance.setTextColor(ged.getColor());
         tvDistance.setTextSize(Tools.fromDpToPx(10));
@@ -77,6 +78,7 @@ public class GameDynamicView extends GameView {
 
         for (Throw dthrow : ged.getCurrentDiscThrows()) {
             CheckBox cb = new CheckBox(context);
+            cb.setId(dthrow.getRoundNr()*ged.getCurrentDiscThrows().size() + dthrow.getThrowNr());
             cb.setTag(dthrow);
             cb.setButtonDrawable(R.drawable.custom_checkbox_design_medium);
             cb.setOnClickListener(v -> {

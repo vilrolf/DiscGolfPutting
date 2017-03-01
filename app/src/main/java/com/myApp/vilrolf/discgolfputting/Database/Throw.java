@@ -1,6 +1,9 @@
 package com.myApp.vilrolf.discgolfputting.Database;
 
+import com.myApp.vilrolf.discgolfputting.Utils.DateUtil;
+
 import java.io.Serializable;
+import java.util.Calendar;
 
 /**
  * Created by Viljar on 24-Sep-16.
@@ -16,6 +19,7 @@ public class Throw implements Serializable {
     private int roundNr;
     private double distance;
     private String timestamp;
+    private Calendar calendar;
 
     public Throw() {
 
@@ -32,6 +36,7 @@ public class Throw implements Serializable {
 
     public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
+        this.calendar = DateUtil.stringToCal(timestamp);
     }
 
     public int getType() {
@@ -122,5 +127,9 @@ public class Throw implements Serializable {
             return String.format("%d", (long) distance);
         else
             return String.format("%s", distance);
+    }
+
+    public Calendar getCalendar() {
+        return calendar;
     }
 }

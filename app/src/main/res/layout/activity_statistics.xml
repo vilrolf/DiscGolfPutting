@@ -9,25 +9,27 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.myApp.vilrolf.discgolfputting.Activity.StatisticsActivity">
 
-    <Spinner
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/spinnerStatisticsSortTime"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true" />
+        android:id="@+id/linearLayoutSpinnerStatistics">
 
-    <Spinner
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:id="@+id/spinnerStatisticsSortGameType"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentLeft="true" />
+        <Spinner
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/spinnerStatisticsSortGameType"
+            android:layout_weight="1" />
+
+        <Spinner
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/spinnerStatisticsSortTime"
+            android:layout_weight="1" />
+    </LinearLayout>
 
     <LinearLayout
-        android:layout_below="@id/spinnerStatisticsSortTime"
+        android:layout_below="@id/linearLayoutSpinnerStatistics"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

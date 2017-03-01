@@ -104,7 +104,7 @@
         <item>Hit%</item>
     </string-array>
     <string-array name="sortOptionsTime">
-        <item>All</item>
+        <item>All Time</item>
         <item>Year</item>
         <item>Month</item>
         <item>Week</item>

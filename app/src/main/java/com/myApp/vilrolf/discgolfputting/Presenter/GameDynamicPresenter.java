@@ -86,10 +86,11 @@ public class GameDynamicPresenter extends GamePresenter {
         gameDynamicView.clearGameTable();
         for (GameEngineDynamic ge : gameEngineDynamics) {
             ge.saveThrows();
+            ge.updateScore();
             if (ge.getRemaining() == 0) {
                 gameDone = true;
             } else {
-                ge.updateScore();
+
                 ge.getNextRoundThrows();
                 gameDynamicView.updateScore(ge);
                 gameDynamicView.createRound(ge);

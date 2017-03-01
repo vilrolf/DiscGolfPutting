@@ -4,8 +4,12 @@ import android.content.Context;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.myApp.vilrolf.discgolfputting.Utils.DateUtil;
+
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Game game game.
@@ -29,6 +33,7 @@ public class Game implements Serializable {
     private TextView tvHits;
     private TextView tvRemaining;
     private double avgPointPerThrow = -1;
+    private Calendar calendar;
 
     public Game() {
 
@@ -206,6 +211,7 @@ public class Game implements Serializable {
 
     public void setCreated_at(String created_at) {
         this.created_at = created_at;
+        this.calendar = DateUtil.stringToCal(created_at);
     }
 
     public double getScore() {
