@@ -636,7 +636,7 @@ public class DbHelper extends SQLiteOpenHelper {
     }
 
 
-    public void createStandardDynamicGameType(int n, String distanceMarker) {
+    public GameType createStandardDynamicGameType(int n, String distanceMarker) {
         GameType gt = new GameType();
         gt.setGameName("Dynamic Standard Scored");
         gt.setAllShotHitBonus(1);
@@ -661,7 +661,8 @@ public class DbHelper extends SQLiteOpenHelper {
             gt.setPointsPerDistance(1);
             gt.setIncrement(3);
         }
-        createGameType(gt);
+        gt.setId(createGameType(gt));
+        return gt;
     }
 
     public ArrayList<Game> getAllGamesWithThrows() {
@@ -672,7 +673,7 @@ public class DbHelper extends SQLiteOpenHelper {
         return games;
     }
 
-    public void createStandardStreakGame(int nrOfThrowsPerRound, String distanceMarker) {
+    public GameType createStandardStreakGame(int nrOfThrowsPerRound, String distanceMarker) {
         GameType gt = new GameType();
         gt.setGameName("Streak");
         gt.setAllShotHitBonus(1);
@@ -692,5 +693,6 @@ public class DbHelper extends SQLiteOpenHelper {
             gt.setIncrement(3);
         }
         createGameType(gt);
+        return gt;
     }
 }

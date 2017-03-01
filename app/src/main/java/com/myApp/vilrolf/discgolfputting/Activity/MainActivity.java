@@ -1,7 +1,6 @@
 package com.myApp.vilrolf.discgolfputting.Activity;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -18,52 +17,63 @@ import android.widget.Toast;
 import com.myApp.vilrolf.discgolfputting.Database.DbHelper;
 import com.myApp.vilrolf.discgolfputting.Database.GameType;
 import com.myApp.vilrolf.discgolfputting.Database.User;
+import com.myApp.vilrolf.discgolfputting.Presenter.MainPresenter;
 import com.myApp.vilrolf.discgolfputting.R;
 
 import java.util.List;
 
+/*
+The main class is a mess, ill fix it sometime maybe.
+
+ */
 public class MainActivity extends AppCompatActivity {
     private DbHelper mydb;
     private List<GameType> gameTypeList;
     private Spinner gameTypesSpinner;
     private boolean noGameTypes = false;
     private String distanceMarker;
+    private MainPresenter mainPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mydb = new DbHelper(this);
+        gameTypesSpinner = (Spinner) findViewById(R.id.spinnerMainActivityGameTypes);
+        doChecks();
 
-        if (mydb.getAllUsers().size() == 0) {
-            createDialogNewUser();
-        }
-        // SJEKK FOR HVOR MANGE DISCER
+    }
+
+    private void doChecks() {
         SharedPreferences sharedPref = getSharedPreferences("PREF_DISTANCE", Context.MODE_PRIVATE);
         distanceMarker = sharedPref.getString(getString(R.string.distance_type), "empty");
-        if (distanceMarker.equals("empty")) {
-            createDistanceListDialog();
+        if (mydb.getAllGameTypes().size() == 0) {
+            noGameTypes = true;
         }
-        checkGameTypes();
+        if (mydb.getAllUsers().size() == 0) {
+            createDialogNewUser();
+        } else if (distanceMarker.equals("empty")) {
+            createDistanceListDialog();
+        } else {
+            checkGameTypes();
+        }
     }
 
     private void checkGameTypes() {
         gameTypeList = mydb.getAllGameTypes();
         SharedPreferences sharedPref = getSharedPreferences("PREF_DISTANCE", Context.MODE_PRIVATE);
         distanceMarker = sharedPref.getString(getString(R.string.distance_type), "empty");
-        gameTypesSpinner = (Spinner) findViewById(R.id.spinnerMainActivityGameTypes);
         boolean hasDynamic = false;
         boolean hasStandard = false;
         boolean hasStreak = false;
-        if (gameTypeList.size() == 0) {
+        // yeh, this is getting stupid now
+        if (noGameTypes) {
             createHowManyDiscsDialog();
-
-        } else { // yeh, this is getting stupid now
+        } else {
             for (GameType gameType : gameTypeList) {
                 if (gameType.getGameMode() == 1) {
                     hasStandard = true;
                 }
-
                 if (gameType.getGameMode() == 2) {
                     hasDynamic = true;
                 }
@@ -89,6 +99,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
     private void createDialogNewUser() {
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
         alert.setTitle(R.string.create_user_mame);
@@ -106,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
                 user.setId(mydb.createUser(new User(value)));
                 mydb.setAllGamesToUser(user);
                 Toast.makeText(MainActivity.this, "User created", Toast.LENGTH_SHORT).show();
+                doChecks();
             }
 
         });
@@ -137,13 +149,10 @@ public class MainActivity extends AppCompatActivity {
                     String distanceMarker1 = "ft";
                     if (which == 1) {
                         distanceMarker1 = "m";
-
                     }
                     editor.putString(getString(R.string.distance_type), distanceMarker1);
                     editor.apply();
-                    if (noGameTypes) {
-                        createHowManyDiscsDialog();
-                    }
+                    doChecks();
 
                 });
         builder.create();
@@ -172,15 +181,19 @@ public class MainActivity extends AppCompatActivity {
     private void createStandardGameTypes(int n) {
         SharedPreferences sharedPref = getSharedPreferences("PREF_DISTANCE", Context.MODE_PRIVATE);
         String distanceMarker = sharedPref.getString(getString(R.string.distance_type), "empty");
-        mydb.createStandardGameType(n, distanceMarker);
-        mydb.createStandardDynamicGameType(n, distanceMarker);
+        GameType standard = mydb.createStandardGameType(n, distanceMarker);
+        GameType dynamic = mydb.createStandardDynamicGameType(n, distanceMarker);
+        GameType streak = mydb.createStandardStreakGame(n, distanceMarker);
         gameTypeList = mydb.getAllGameTypes();
+
+
         gameTypesSpinner.setAdapter(createSpinnerAdapter());
+
+        //doChecks();
     }
 
     @Override
     public void onResume() {
-        checkGameTypes();
         super.onResume();
     }
 
@@ -192,20 +205,15 @@ public class MainActivity extends AppCompatActivity {
         if (distanceMarker.equals("empty")) {
             createDistanceListDialog();
         } else {
-            if (noGameTypes) {
-                createHowManyDiscsDialog();
+            GameType selectedGameType = gameTypeList.get(gameTypesSpinner.getSelectedItemPosition());
+            if (selectedGameType.getGameMode() >= 2) {
+                Intent intent = new Intent(this, GameDynamicActivity.class);
+                intent.putExtra("gameType", selectedGameType);
+                startActivity(intent);
             } else {
-                GameType selectedGameType = gameTypeList.get(gameTypesSpinner.getSelectedItemPosition());
-                if (selectedGameType.getGameMode() >= 2) {
-                    Intent intent = new Intent(this, GameDynamicActivity.class);
-                    intent.putExtra("gameType", selectedGameType);
-                    startActivity(intent);
-                } else {
-                    Intent intent = new Intent(this, GameActivity.class);
-                    intent.putExtra("gameType", selectedGameType);
-                    startActivity(intent);
-                }
-
+                Intent intent = new Intent(this, GameActivity.class);
+                intent.putExtra("gameType", selectedGameType);
+                startActivity(intent);
             }
         }
     }
