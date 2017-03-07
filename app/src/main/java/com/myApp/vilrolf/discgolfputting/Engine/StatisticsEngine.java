@@ -26,7 +26,7 @@ public class StatisticsEngine {
                 distances.add(th.getDistance());
                 hitsFromDistances.add(0);
                 amountOfThrowsFromDistances.add(1);
-                i = distances.size() -1;
+                i = distances.size() - 1;
             } else {
                 i = distances.indexOf(th.getDistance());
                 amountOfThrowsFromDistances.set(i, amountOfThrowsFromDistances.get(i) + 1);

@@ -153,8 +153,9 @@ public class StatisticsActivity extends AppCompatActivity {
         lineChartValues = new float[distances.length];
         lineChartLabels = new String[distances.length];
         for (int i = 0; i < distances.length; i++) {
-            long nrOfHits = se.getNrOfHitsFromDistance(i);
-            long nrOfThrows = se.getNrOfThrowsFromDistance(i);
+            int x = se.distances.indexOf(distances[i]);
+            long nrOfHits = se.getNrOfHitsFromDistance(x);
+            long nrOfThrows = se.getNrOfThrowsFromDistance(x);
             double hitPerc = ((double) nrOfHits / (double) nrOfThrows) * 100;
 
             lineChartLabels[i] = Double.toString(distances[i]);

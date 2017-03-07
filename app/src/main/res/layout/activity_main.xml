@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -78,7 +79,6 @@
         android:id="@+id/buttonMainStatistics"
         android:onClick="goToStatistics"
         android:layout_alignBaseline="@+id/buttonMainProgress"
-        android:layout_alignBottom="@+id/buttonMainProgress"
         android:layout_toRightOf="@+id/buttonMainSettings"
         android:layout_toEndOf="@+id/buttonMainSettings" />
 
