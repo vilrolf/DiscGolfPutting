@@ -132,4 +132,7 @@
     <string name="upgrade_error">Upgrade threshold can not be higher then number of throws per round</string>
     <string name="downgrade_error">Downgrade threshold can not be higher then nr of throws per round</string>
     <string name="All">All</string>
+    <string name="progress">Progress</string>
+    <string name="create_ngame_type">Create \n Game Type</string>
+    <string name="list">List</string>
 </resources>
