@@ -32,7 +32,6 @@ public class MainActivity extends AppCompatActivity {
     private Spinner gameTypesSpinner;
     private boolean noGameTypes = false;
     private String distanceMarker;
-    private MainPresenter mainPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -124,15 +124,22 @@ public class StatisticsActivity extends AppCompatActivity {
 
     private void setupContent() {
         se = new StatisticsEngine(activeThrows);
+
         // First second last etc
         tableLayout1.removeAllViews();
-        setupStaticTableData(tableLayout1);
-        // different distances
         tableLayout2.removeAllViews();
-        setupDynamicTableData(tableLayout2);
         lineChartView.invalidate();
         lineChartView.reset();
-        setupLineChart();
+        if(activeThrows.size() != 0){
+            setupStaticTableData(tableLayout1);
+            // different distances
+
+            setupDynamicTableData(tableLayout2);
+
+            setupLineChart();
+        }
+
+
 
     }
 

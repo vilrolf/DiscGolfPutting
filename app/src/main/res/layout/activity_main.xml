@@ -71,19 +71,18 @@
             android:text="@string/statistics" />
 
         <Button
-            android:id="@+id/button6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_column="0"
             android:layout_gravity="fill"
             android:layout_row="3"
-            android:drawableLeft="@drawable/ic_settings_black_40dp"
-            android:drawableStart="@drawable/ic_settings_black_40dp"
-            android:onClick="goToSettings"
-            android:text="@string/title_activity_settings" />
+            android:drawableLeft="@drawable/ic_list_black_40dp"
+            android:drawableStart="@drawable/ic_list_black_40dp"
+            android:onClick="goToDbTest"
+            android:text="@string/list"
+            />
 
         <Button
-            android:id="@+id/button7"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_column="1"
@@ -95,17 +94,17 @@
             android:text="@string/create_ngame_type" />
 
         <Button
-            android:id="@+id/buttonMainList"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_column="0"
             android:layout_columnSpan="2"
             android:layout_gravity="center"
             android:layout_row="4"
-            android:drawableLeft="@drawable/ic_list_black_40dp"
-            android:drawableStart="@drawable/ic_list_black_40dp"
-            android:onClick="goToDbTest"
-            android:text="@string/list" />
+            android:drawableLeft="@drawable/ic_settings_black_40dp"
+            android:drawableStart="@drawable/ic_settings_black_40dp"
+            android:onClick="goToSettings"
+            android:text="@string/title_activity_settings"
+            />
     </GridLayout>
 
 </RelativeLayout>

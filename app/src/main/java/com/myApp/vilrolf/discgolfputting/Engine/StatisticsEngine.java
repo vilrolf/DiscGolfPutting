@@ -18,27 +18,31 @@ public class StatisticsEngine {
     public int[] throwType = new int[3];
 
     public StatisticsEngine(ArrayList<Throw> activeThrows) {
-        for (Throw th : activeThrows) {
-            amountOfThrows++;
-            throwType[th.getType()]++;
-            int i;
-            if (!distances.contains(th.getDistance())) {
-                distances.add(th.getDistance());
-                hitsFromDistances.add(0);
-                amountOfThrowsFromDistances.add(1);
-                i = distances.size() - 1;
-            } else {
-                i = distances.indexOf(th.getDistance());
-                amountOfThrowsFromDistances.set(i, amountOfThrowsFromDistances.get(i) + 1);
+
+
+        if (activeThrows.size() == 0) {
+
+        } else {
+            for (Throw th : activeThrows) {
+                amountOfThrows++;
+                throwType[th.getType()]++;
+                int i;
+                if (!distances.contains(th.getDistance())) {
+                    distances.add(th.getDistance());
+                    hitsFromDistances.add(0);
+                    amountOfThrowsFromDistances.add(1);
+                    i = distances.size() - 1;
+                } else {
+                    i = distances.indexOf(th.getDistance());
+                    amountOfThrowsFromDistances.set(i, amountOfThrowsFromDistances.get(i) + 1);
+                }
+
+                if (th.isHit()) {
+                    hitsType[th.getType()]++;
+                    hits++;
+                    hitsFromDistances.set(i, hitsFromDistances.get(i) + 1);
+                }
             }
-
-            if (th.isHit()) {
-                hitsType[th.getType()]++;
-                hits++;
-                hitsFromDistances.set(i, hitsFromDistances.get(i) + 1);
-            }
-
-
         }
     }
 
