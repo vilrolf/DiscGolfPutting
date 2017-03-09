@@ -4,6 +4,12 @@
         <item>Imperial</item>
         <item>Metric</item>
     </string-array>
+    <string-array name="sortOptionsTime">
+        <item>All Time</item>
+        <item>Month</item>
+        <item>Week</item>
+        <item>Day</item>
+    </string-array>
     <string-array name="gameTypeStandardFields">
         <item>Game type name</item>
         <item>Number of rounds</item>
@@ -45,11 +51,13 @@
         <item>6</item>
         <item>2</item>
     </string-array>
-
     <string-array name="progressChooseStat">
         <item>Day</item>
         <item>All games</item>
     </string-array>
-
-
+    <string-array name="throwTypes">
+        <item>Middle</item>
+        <item>First</item>
+        <item>Last</item>
+    </string-array>
 </resources>

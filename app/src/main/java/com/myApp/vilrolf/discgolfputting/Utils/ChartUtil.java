@@ -5,7 +5,6 @@ import android.graphics.Paint;
 
 import com.db.chart.Tools;
 import com.db.chart.animation.Animation;
-import com.db.chart.model.ChartSet;
 import com.db.chart.model.LineSet;
 import com.db.chart.view.LineChartView;
 import com.myApp.vilrolf.discgolfputting.Database.Game;
@@ -134,20 +133,20 @@ public class ChartUtil {
         for (Game game : allGames) {
             Calendar cal = DateUtil.stringToCal(game.getCreated_at());
             int gameDayOfYear = cal.get(Calendar.DAY_OF_YEAR);
-            if(gameDayOfYear != currentDayOfYear){ // we're at a new day
+            if (gameDayOfYear != currentDayOfYear) { // we're at a new day
                 totalScore.add(game.getAvgPointPerThrow());
                 currentDayOfYear = gameDayOfYear;
                 labels.add("" + gameDayOfYear);
                 currentIndex++;
                 gamesOnDay.add(1);
             } else {
-                totalScore.set(currentIndex,totalScore.get(currentIndex) + game.getAvgPointPerThrow());
+                totalScore.set(currentIndex, totalScore.get(currentIndex) + game.getAvgPointPerThrow());
                 gamesOnDay.set(currentIndex, gamesOnDay.get(currentIndex) + 1);
             }
         }
-        for(int i = 0; i < totalScore.size(); i++){
+        for (int i = 0; i < totalScore.size(); i++) {
             float value = (float) (double) totalScore.get(i) / gamesOnDay.get(i);
-            lineSet.addPoint(labels.get(i),value);
+            lineSet.addPoint(labels.get(i), value);
         }
 
         return lineSet;
@@ -191,7 +190,7 @@ public class ChartUtil {
 
         LineSet lineSet = new LineSet();
 
-        for(Game game : activeGames){
+        for (Game game : activeGames) {
             lineSet.addPoint("" + game.getId(), (float) game.getAvgPointPerThrow());
         }
         return lineSet;
@@ -202,8 +201,8 @@ public class ChartUtil {
         LineSet lineSet = new LineSet();
         lineSet.setDotsRadius(Tools.fromDpToPx(7.0f));
         double max = 0;
-        for(Game game : activeGames){
-            if(game.getAvgPointPerThrow() > max) {
+        for (Game game : activeGames) {
+            if (game.getAvgPointPerThrow() > max) {
                 max = game.getAvgPointPerThrow();
             }
             lineSet.addPoint("" + game.getId(), (float) game.getAvgPointPerThrow());
@@ -211,5 +210,27 @@ public class ChartUtil {
         }
         lineChartView.addData(lineSet);
         return max;
+    }
+
+    public static LineChartView setupLineChartMultipleTimePeriods(LineChartView lineChartView, ArrayList<ArrayList<Float>> lineChartsValues, ArrayList<ArrayList<String>> linechartsLabels) {
+        if (lineChartsValues.size() != linechartsLabels.size()) {
+            return null;
+        }
+        lineChartView.setAxisBorderValues(0, 100, 25);
+        lineChartView.setGrid(4, 0, setupPaint());
+
+        for (int i = 0; i < linechartsLabels.size(); i++) {
+            LineSet lineSet = new LineSet();
+            lineSet.setColor(ColorUtil.getColorArray()[i% ColorUtil.getColorArray().length] );
+            for(int j = 0; j < linechartsLabels.get(i).size();j++){
+                lineSet.addPoint(linechartsLabels.get(i).get(j), lineChartsValues.get(i).get(j));
+
+            }
+
+            lineChartView.addData(lineSet);
+        }
+
+        return lineChartView;
+
     }
 }

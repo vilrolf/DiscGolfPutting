@@ -9,10 +9,12 @@ import android.graphics.Color;
 public class ColorUtil {
 
     public static int[] getColorArray(){
-        int colors[] = new int[3];
+        int colors[] = new int[5];
         colors[0] = Color.BLUE;
         colors[1] = Color.RED;
         colors[2] = Color.GREEN;
+        colors[3] = Color.MAGENTA;
+        colors[4] = Color.CYAN;
         return colors;
     }
 }

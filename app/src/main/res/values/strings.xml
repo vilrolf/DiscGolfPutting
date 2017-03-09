@@ -103,12 +103,6 @@
         <item>Score</item>
         <item>Hit%</item>
     </string-array>
-    <string-array name="sortOptionsTime">
-        <item>All Time</item>
-        <item>Month</item>
-        <item>Week</item>
-        <item>Day</item>
-    </string-array>
     <string-array name="gameTypes">
         <item>Normal</item>
         <item>Dynamic</item>
