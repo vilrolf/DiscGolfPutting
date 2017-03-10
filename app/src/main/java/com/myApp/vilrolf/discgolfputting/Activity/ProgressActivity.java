@@ -59,18 +59,22 @@ public class ProgressActivity extends AppCompatActivity {
        // <item>All games</item>
 
         activeGames = mydb.getAllGames();
+
         lineChartView.invalidate();
         lineChartView.reset();
 
        // lineChartView.rem
-        if(spinnerPos == 0){
-            lineChartView.addData(ChartUtil.makeDayProgressChart(activeGames));
-        } else if(spinnerPos == 1){
+        if(activeGames.size() > 0){
+            if(spinnerPos == 0){
+                lineChartView.addData(ChartUtil.makeDayProgressChart(activeGames));
+            } else if(spinnerPos == 1){
 
-            double max = ChartUtil.addMakeAllGameProgressChart(activeGames,lineChartView);
-            int iMax = (int) Math.round(max);
-            lineChartView.setAxisBorderValues(0, iMax, 1);
+                double max = ChartUtil.addMakeAllGameProgressChart(activeGames,lineChartView);
+                int iMax = (int) Math.round(max);
+                lineChartView.setAxisBorderValues(0, iMax, 1);
+            }
         }
+
 
         //lineChartView.addData(ChartUtil.makeWeekGraph(mydb.get7DayStatisticsFromDistance(1)));
 

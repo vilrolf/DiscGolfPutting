@@ -153,29 +153,11 @@ public class DbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        /*
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ROUND);
+
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_USER);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_GAME);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_THROW);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_GAME_TYPE);
-        */
-        if (newVersion > oldVersion) {
-            if (oldVersion < 28) {
-                db.execSQL("ALTER TABLE " + TABLE_GAME + " ADD COLUMN " + GAME_COLUMN_FOREIGN_MULTPLAYER_GAME + " INTEGER DEFAULT -1");
-                db.execSQL("ALTER TABLE " + TABLE_GAME_TYPE + " ADD COLUMN " + GAMETYPE_COLUMN_GAME_MODE + " INTEGER");
-                db.execSQL("UPDATE " + TABLE_GAME_TYPE + " SET " + GAMETYPE_COLUMN_GAME_MODE + " = 1");
-            }
-            if (oldVersion < 29) {
-                db.execSQL("ALTER TABLE " + TABLE_GAME_TYPE + " ADD COLUMN " + GAMETYPE_COLUMN_THRESHOLD_DOWNGRADE + " INTEGER");
-                db.execSQL("ALTER TABLE " + TABLE_GAME_TYPE + " ADD COLUMN " + GAMETYPE_COLUMN_THRESHOLD_UPGRADE + " INTEGER");
-            }
-            if (oldVersion < 30) {
-                db.execSQL("ALTER TABLE " + TABLE_GAME + " ADD COLUMN " + GAME_COLUMN_AVG_POINT_PER_THROW + " REAL");
-            }
-
-        }
-
 
         onCreate(db);
     }
