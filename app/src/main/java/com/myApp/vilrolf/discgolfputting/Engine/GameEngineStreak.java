@@ -54,12 +54,9 @@ public class GameEngineStreak extends GameEngineDynamic {
                 hits++;
             }
         }
-
         currentDistance += gameType.getIncrement();
-
         roundNr++;
         discsLeft = hits;
         game.getDiscThrows().addAll(currentDiscThrows);
-
     }
 }

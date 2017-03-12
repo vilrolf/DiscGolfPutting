@@ -477,33 +477,7 @@ public class DbHelper extends SQLiteOpenHelper {
     }
 
 
-    public GameType createStandardGameType(int n, String distanceMarker) {
-        GameType gameType = new GameType();
-        gameType.setGameName("Standard");
-        gameType.setNrOfThrowsPerRound(n);
-        gameType.setRounds(6);
-        gameType.setGameMode(1);
 
-        if (distanceMarker.equals("m")) {
-            gameType.setStart(3);
-            gameType.setIncrement(1.5);
-            gameType.setPointsPerDistance(3);
-            gameType.setLastShotMultiplier(1.2);
-            gameType.setFirstShotMultiplier(1.2);
-            gameType.setAllShotHitBonus(1);
-
-        } else {
-            gameType.setStart(10);
-            gameType.setIncrement(5);
-            gameType.setPointsPerDistance(1);
-            gameType.setLastShotMultiplier(1.2);
-            gameType.setFirstShotMultiplier(1.2);
-            gameType.setAllShotHitBonus(1);
-        }
-
-        gameType.setId(createGameType(gameType));
-        return gameType;
-    }
 
     public ArrayList<Game> getGamesFromIds(ArrayList<Long> gamesList) {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -619,10 +593,38 @@ public class DbHelper extends SQLiteOpenHelper {
 
     }
 
+    public GameType createStandardGameType(int n, String distanceMarker) {
+        GameType gameType = new GameType();
+        gameType.setGameName("Standard");
+        gameType.setNrOfThrowsPerRound(n);
+        gameType.setRounds(6);
+        gameType.setGameMode(1);
+
+        if (distanceMarker.equals("m")) {
+            gameType.setStart(3);
+            gameType.setIncrement(1.5);
+            gameType.setPointsPerDistance(1);
+            gameType.setLastShotMultiplier(1.2);
+            gameType.setFirstShotMultiplier(1.2);
+            gameType.setAllShotHitBonus(1);
+
+        } else {
+            gameType.setStart(10);
+            gameType.setIncrement(5);
+            gameType.setPointsPerDistance(1);
+            gameType.setLastShotMultiplier(1.2);
+            gameType.setFirstShotMultiplier(1.2);
+            gameType.setAllShotHitBonus(1);
+        }
+
+        gameType.setId(createGameType(gameType));
+        return gameType;
+    }
+
 
     public GameType createStandardDynamicGameType(int n, String distanceMarker) {
         GameType gt = new GameType();
-        gt.setGameName("Dynamic Standard Scored");
+        gt.setGameName("Dynamic");
         gt.setAllShotHitBonus(1);
         gt.setFirstShotMultiplier(1);
         gt.setLastShotMultiplier(1.2);
@@ -638,7 +640,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
         if (distanceMarker.equals("m")) {
             gt.setStart(3);
-            gt.setPointsPerDistance(3);
+            gt.setPointsPerDistance(1);
             gt.setIncrement(1);
         } else {
             gt.setStart(10);
@@ -669,7 +671,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
         if (distanceMarker.equals("m")) {
             gt.setStart(3);
-            gt.setPointsPerDistance(3);
+            gt.setPointsPerDistance(1);
             gt.setIncrement(1);
         } else {
             gt.setStart(10);
@@ -678,6 +680,30 @@ public class DbHelper extends SQLiteOpenHelper {
         }
         createGameType(gt);
         return gt;
+    }
+
+    public GameType createStandardFlipItGameType(int nrOfThrowsPerRound, String distanceMarker){
+        GameType gt = new GameType();
+        gt.setGameName("Flip it");
+        gt.setAllShotHitBonus(1);
+        gt.setFirstShotMultiplier(1);
+        gt.setLastShotMultiplier(1);
+        gt.setRounds(-1);
+        gt.setNrOfThrowsPerRound(nrOfThrowsPerRound);
+        gt.setGameMode(4);
+
+        if (distanceMarker.equals("m")) {
+            gt.setStart(10);
+            gt.setPointsPerDistance(1);
+            gt.setIncrement(-1);
+        } else {
+            gt.setStart(30);
+            gt.setPointsPerDistance(1);
+            gt.setIncrement(-3);
+        }
+        createGameType(gt);
+        return gt;
+
     }
 
     /**

@@ -4,10 +4,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -27,12 +31,10 @@ public class GameList extends AppCompatActivity {
     private ArrayList<MultiplayerGame> multiplayerGames;
     private ArrayList<User> users;
     private Spinner spinnerUser;
-    private Spinner spinnerSorter;
     private String sortMethod = "";
     private boolean singlePlayerFlag = true;
 
     private DbHelper mydb;
-
 
 
     @Override
@@ -54,17 +56,101 @@ public class GameList extends AppCompatActivity {
         mydb = new DbHelper(this);
         users = mydb.getAllUsers();
         loadGamesFromDB();
-        spinnerSorter = (Spinner) findViewById(R.id.spinnerSort);
         spinnerUser = (Spinner) findViewById(R.id.spinnerUsers);
         loadSpinnerUser();
-        loadSpinnerSort();
 
     }
 
-    private void loadSpinnerUser() {
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.list_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.sort:
+                //showPopupSort();
+                View menuitemViewSort = findViewById(R.id.sort);
+                showPopupSort(menuitemViewSort);
+                return true;
+            case R.id.filter:
+                View menuItemViewFilter = findViewById(R.id.filter);
+                showPopupFilter(menuItemViewFilter);
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void showPopupFilter(View v) {
+        PopupMenu popup = new PopupMenu(this, v);
+        //MenuInflater inflater = popup.getMenuInflater();
         ArrayList<String> spinnerUserValues = new ArrayList<>();
         spinnerUserValues.add(getString(R.string.all));
         spinnerUserValues.add(getString(R.string.multiplayer));
+        for (User user : users) {
+            spinnerUserValues.add(user.getName());
+        }
+        for (String s : spinnerUserValues) {
+            popup.getMenu().add(s);
+        }
+        popup.setOnMenuItemClickListener(item -> {
+            Toast.makeText(this, item.getTitle() + " " + item.getOrder(), Toast.LENGTH_SHORT).show();
+
+            if (item.getTitle().equals(getString(R.string.all))) {
+                activeGames = games;
+                singlePlayerFlag = true;
+
+            } else if (item.getTitle().equals(getString(R.string.multiplayer))) {
+                multiplayerGames = mydb.getAllMultiplayerGames();
+                singlePlayerFlag = false;
+            } else {
+                for (User user : users) {
+                    if (item.getTitle().equals(user.getName())) {
+                        activeGames = mydb.getAllGamesFromUser(user);
+                        singlePlayerFlag = true;
+                    }
+                }
+            }
+            fillList();
+            return true;
+        });
+
+        popup.show();
+
+    }
+
+
+    public void showPopupSort(View v) {
+        PopupMenu popup = new PopupMenu(this, v);
+        MenuInflater inflater = popup.getMenuInflater();
+        inflater.inflate(R.menu.popup_filter, popup.getMenu());
+
+        popup.setOnMenuItemClickListener(item -> {
+            Toast.makeText(GameList.this, item.getTitle(), Toast.LENGTH_SHORT).show();
+            switch (item.getItemId()) {
+                case R.id.menu_score:
+                    sortMethod = "Score";
+                    break;
+
+                case R.id.menu_time:
+                    sortMethod = "Time";
+                    break;
+            }
+            sortActiveGames();
+            fillList();
+            return true;
+        });
+
+        popup.show();
+    }
+
+
+    private void loadSpinnerUser() {
+        ArrayList<String> spinnerUserValues = new ArrayList<>();
         for (User user : users) {
             spinnerUserValues.add(user.getName());
         }
@@ -72,20 +158,6 @@ public class GameList extends AppCompatActivity {
         spinnerUser.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (spinnerUserValues.get(position).equals(getString(R.string.all))) {
-                    activeGames = games;
-                    singlePlayerFlag = true;
-
-                } else if (spinnerUserValues.get(position).equals(getString(R.string.multiplayer))) {
-                    multiplayerGames = mydb.getAllMultiplayerGames();
-                    singlePlayerFlag = false;
-
-                } else {
-                    User selecetedUser = users.get(position - 2);
-                    activeGames = mydb.getAllGamesFromUser(selecetedUser);
-                    singlePlayerFlag = true;
-                }
-                fillList();
             }
 
             @Override
@@ -95,33 +167,10 @@ public class GameList extends AppCompatActivity {
         });
     }
 
-    private void loadSpinnerSort() {
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.sortOptionsContent, android.R.layout.simple_spinner_item);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerSorter.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                changeSortMethod(position);
-                sortActiveGames();
-                fillList();
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
-        spinnerSorter.setAdapter(adapter);
-    }
-
-    public void changeSortMethod(int pos) {
-        sortMethod = getResources().getStringArray((R.array.sortOptionsContent))[pos];
-    }
 
     private void fillList() {
 
-        if(singlePlayerFlag){
+        if (singlePlayerFlag) {
             ArrayAdapter<Game> adapter;
             adapter = new ArrayAdapter<>(this,
                     android.R.layout.simple_list_item_1, activeGames);
@@ -145,7 +194,6 @@ public class GameList extends AppCompatActivity {
 
 
     }
-
 
 
     private void sortActiveGames() {
@@ -174,7 +222,7 @@ public class GameList extends AppCompatActivity {
             game.setUser(mydb.getUserFromId(game.getUserId()));
         }
         activeGames = games;
-        if(!singlePlayerFlag){
+        if (!singlePlayerFlag) {
             multiplayerGames = mydb.getAllMultiplayerGames();
         }
 

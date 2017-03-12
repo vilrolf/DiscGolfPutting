@@ -65,6 +65,8 @@ public class MainActivity extends AppCompatActivity {
         boolean hasDynamic = false;
         boolean hasStandard = false;
         boolean hasStreak = false;
+        boolean hasFlipIt = false;
+        // TODO  please fix main soon cmon, this is getting more and more and more silly.
         // yeh, this is getting stupid now
         if (noGameTypes) {
             createHowManyDiscsDialog();
@@ -79,6 +81,9 @@ public class MainActivity extends AppCompatActivity {
                 if (gameType.getGameMode() == 3) {
                     hasStreak = true;
                 }
+                if (gameType.getGameMode() == 4){
+                    hasFlipIt = true;
+                }
             }
             if (!hasDynamic) {
                 mydb.createStandardDynamicGameType((int) gameTypeList.get(0).getNrOfThrowsPerRound(), distanceMarker);
@@ -90,6 +95,10 @@ public class MainActivity extends AppCompatActivity {
             }
             if (!hasStreak) {
                 mydb.createStandardStreakGame((int) gameTypeList.get(0).getNrOfThrowsPerRound(), distanceMarker);
+                gameTypeList = mydb.getAllGameTypes();
+            }
+            if(!hasFlipIt) {
+                mydb.createStandardFlipItGameType((int) gameTypeList.get(0).getNrOfThrowsPerRound(), distanceMarker);
                 gameTypeList = mydb.getAllGameTypes();
             }
 

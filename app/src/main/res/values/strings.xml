@@ -103,11 +103,6 @@
         <item>Score</item>
         <item>Hit%</item>
     </string-array>
-    <string-array name="gameTypes">
-        <item>Normal</item>
-        <item>Dynamic</item>
-        <item>Streak</item>
-    </string-array>
     <string name="title_activity_multiplayer_game_statistics">MultiplayerGameStatistics</string>
     <string name="hit_perc">Hit %</string>
     <string name="multiplayer">Multiplayer</string>
@@ -129,4 +124,7 @@
     <string name="progress">Progress</string>
     <string name="create_ngame_type">Create \n Game Type</string>
     <string name="list">List</string>
+    <string name="filter">Filter</string>
+    <string name="time">Time</string>
+    <string name="sort">Sort</string>
 </resources>

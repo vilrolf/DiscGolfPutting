@@ -14,6 +14,7 @@ import com.myApp.vilrolf.discgolfputting.Database.GameType;
 import com.myApp.vilrolf.discgolfputting.MvpView.GameDynamicView;
 import com.myApp.vilrolf.discgolfputting.Presenter.GameDynamicPresenter;
 import com.myApp.vilrolf.discgolfputting.Presenter.GameDynamicStreakPresenter;
+import com.myApp.vilrolf.discgolfputting.Presenter.GameFlipItPresenter;
 import com.myApp.vilrolf.discgolfputting.R;
 
 public class GameDynamicActivity extends AppCompatActivity {
@@ -25,6 +26,7 @@ public class GameDynamicActivity extends AppCompatActivity {
     private GameDynamicPresenter gdp;
     private GameDynamicStreakPresenter gdsp;
     private GameDynamicView gdw;
+    private GameFlipItPresenter gameFlipItPresenter;
     private long gameMode;
 
     @Override
@@ -40,7 +42,10 @@ public class GameDynamicActivity extends AppCompatActivity {
                 gdp.nextRound();
             } else if (gameMode == 3) {
                 gdsp.nextRound();
+            } else if(gameMode == 4){
+                gameFlipItPresenter.nextRound();
             }
+
 
         });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -63,7 +68,17 @@ public class GameDynamicActivity extends AppCompatActivity {
             setupGdp();
         } else if (gameMode == 3) {
             setupGameDynamicStreakPresenter();
+        } else if( gameMode == 4){
+            setupGameFlipItPresenter();
         }
+    }
+
+    private void setupGameFlipItPresenter() {
+        gameFlipItPresenter = new GameFlipItPresenter();
+        gameFlipItPresenter.setDb(new DbHelper(this));
+        gameFlipItPresenter.setGdw(gdw);
+        gameFlipItPresenter.setGameType((GameType) getIntent().getSerializableExtra("gameType"));
+        gameFlipItPresenter.setupGdp(this);
     }
 
     private void setupGameDynamicStreakPresenter() {

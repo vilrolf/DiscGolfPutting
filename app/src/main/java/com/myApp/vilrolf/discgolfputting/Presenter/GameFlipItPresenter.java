@@ -9,43 +9,42 @@ import com.myApp.vilrolf.discgolfputting.Database.MultiplayerGame;
 import com.myApp.vilrolf.discgolfputting.Database.Throw;
 import com.myApp.vilrolf.discgolfputting.Database.User;
 import com.myApp.vilrolf.discgolfputting.Engine.GameEngine;
-import com.myApp.vilrolf.discgolfputting.Engine.GameEngineDynamic;
-import com.myApp.vilrolf.discgolfputting.Engine.GameEngineStreak;
+import com.myApp.vilrolf.discgolfputting.Engine.GameEngineFlipIt;
 
 import java.util.ArrayList;
 
 /**
- * Created by Viljar on 16-Feb-17.
+ * Created by Viljar on 10-Mar-17.
  */
 
-public class GameDynamicStreakPresenter extends GameDynamicPresenter {
+public class GameFlipItPresenter extends GameDynamicPresenter {
     private boolean gameStarted = false;
-    private ArrayList<GameEngineStreak> gameEngineStreaks = new ArrayList<>();
+    private ArrayList<GameEngineFlipIt> gameEngineFlipIts = new ArrayList<>();
 
-    public GameDynamicStreakPresenter() {
+    public GameFlipItPresenter() {
 
     }
 
 
-    public void removeUser(GameEngineDynamic gameEngineDynamic) {
-        super.removeUser(gameEngineDynamic);
-        gameDynamicView.removeGame(gameEngineDynamic);
-        gameEngineStreaks.remove(gameEngineDynamic);
+    public void removeUser(GameEngineFlipIt GameEngineFlipIt) {
+        super.removeUser(GameEngineFlipIt);
+        gameDynamicView.removeGame(GameEngineFlipIt);
+        gameEngineFlipIts.remove(GameEngineFlipIt);
 
     }
 
 
     public void addUser(User user) {
 
-        GameEngineStreak gameEngineStreak = new GameEngineStreak();
-        super.addUser(user, gameEngineStreak);
-        gameDynamicView.addUserTvHits(gameEngineStreak);
-        gameDynamicView.addUserTvRemaining(gameEngineStreak);
-        gameEngineStreaks.add(gameEngineStreak);
-        gameDynamicView.addUserButton(gameEngineStreak);
+        GameEngineFlipIt gameEngineFlipIt = new GameEngineFlipIt();
+        super.addUser(user, gameEngineFlipIt);
+        gameDynamicView.addUserTvHits(gameEngineFlipIt);
+        gameDynamicView.addUserTvRemaining(gameEngineFlipIt);
+        gameEngineFlipIts.add(gameEngineFlipIt);
+        gameDynamicView.addUserButton(gameEngineFlipIt);
 
-        gameEngineStreak.getNextRoundThrows();
-        gameDynamicView.createRound(gameEngineStreak);
+        gameEngineFlipIt.getNextRoundThrows();
+        gameDynamicView.createRound(gameEngineFlipIt);
     }
 
 
@@ -55,7 +54,7 @@ public class GameDynamicStreakPresenter extends GameDynamicPresenter {
             startGame();
         }
         gameDynamicView.clearGameTable();
-        for (GameEngineStreak ge : gameEngineStreaks) {
+        for (GameEngineFlipIt ge : gameEngineFlipIts) {
             ge.saveThrows(); // Also updates distance
             if (ge.getRemaining() == 0) {
                 gameDone = true;
@@ -75,12 +74,12 @@ public class GameDynamicStreakPresenter extends GameDynamicPresenter {
 
     private MultiplayerGame saveGame() {
         MultiplayerGame multiplayerGame = new MultiplayerGame();
-        if (gameEngineStreaks.size() > 1) {
+        if (gameEngineFlipIts.size() > 1) {
             multiplayerGame.setId(db.createMultiplayerGame());
         }
 
-        for (GameEngine ge : gameEngineStreaks) {
-            if (gameEngineStreaks.size() > 1) {
+        for (GameEngine ge : gameEngineFlipIts) {
+            if (gameEngineFlipIts.size() > 1) {
                 ge.getGame().setMultiplayerId(multiplayerGame.getId());
                 multiplayerGame.addGameId(ge.getGame().getId());
             } else {
@@ -101,10 +100,10 @@ public class GameDynamicStreakPresenter extends GameDynamicPresenter {
     }
 
     private void openGameStatistics(MultiplayerGame multiplayerGame) {
-        if (gameEngineStreaks.size() == 1) {
+        if (gameEngineFlipIts.size() == 1) {
             Intent intent = new Intent(context, GameStatsticsActivity.class);
             intent.putExtra("fromGameActivity", true);
-            intent.putExtra("gameId", gameEngineStreaks.get(0).getGame().getId());
+            intent.putExtra("gameId", gameEngineFlipIts.get(0).getGame().getId());
             context.startActivity(intent);
         } else {
 
@@ -117,10 +116,12 @@ public class GameDynamicStreakPresenter extends GameDynamicPresenter {
 
     private void startGame() {
         gameStarted = true;
-        for (GameEngine gameEngine : gameEngineStreaks) {
+        for (GameEngine gameEngine : gameEngineFlipIts) {
             gameDynamicView.makeButtonsNotClickable(gameEngine);
         }
         gameDynamicView.makeAddButtonHidden();
 
     }
+
+
 }

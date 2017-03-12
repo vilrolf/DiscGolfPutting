@@ -71,9 +71,7 @@ public class GameActivity extends AppCompatActivity {
         colors = ColorUtil.getColorArray();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(view -> {
-            saveAndGoToStatistics();
-        });
+        fab.setOnClickListener(view -> saveAndGoToStatistics());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         gameTable = (TableLayout) findViewById(R.id.gameTableLayout);
