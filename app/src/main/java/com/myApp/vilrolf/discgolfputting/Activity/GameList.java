@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.myApp.vilrolf.discgolfputting.Database.DbHelper;
 import com.myApp.vilrolf.discgolfputting.Database.Game;
+import com.myApp.vilrolf.discgolfputting.Database.GameType;
 import com.myApp.vilrolf.discgolfputting.Database.MultiplayerGame;
 import com.myApp.vilrolf.discgolfputting.Database.User;
 import com.myApp.vilrolf.discgolfputting.R;
@@ -26,21 +27,21 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class GameList extends AppCompatActivity {
-    private ArrayList<Game> games;
+    int currentGameTypeId = -1;
+    private ArrayList<Game> allGames;
     private ArrayList<Game> activeGames;
-    private ArrayList<MultiplayerGame> multiplayerGames;
+    private ArrayList<MultiplayerGame> allMultiplayerGames;
+    private ArrayList<MultiplayerGame> activeMultiplayerGames;
     private ArrayList<User> users;
     private Spinner spinnerUser;
     private String sortMethod = "";
     private boolean singlePlayerFlag = true;
-
     private DbHelper mydb;
 
 
     @Override
     public void onResume() {
         loadGamesFromDB();
-        sortActiveGames();
         fillList();
         super.onResume();
     }
@@ -56,8 +57,8 @@ public class GameList extends AppCompatActivity {
         mydb = new DbHelper(this);
         users = mydb.getAllUsers();
         loadGamesFromDB();
-        spinnerUser = (Spinner) findViewById(R.id.spinnerUsers);
-        loadSpinnerUser();
+        spinnerUser = (Spinner) findViewById(R.id.spinnerGametypes);
+        loadSpinnerGameType();
 
     }
 
@@ -87,7 +88,6 @@ public class GameList extends AppCompatActivity {
 
     private void showPopupFilter(View v) {
         PopupMenu popup = new PopupMenu(this, v);
-        //MenuInflater inflater = popup.getMenuInflater();
         ArrayList<String> spinnerUserValues = new ArrayList<>();
         spinnerUserValues.add(getString(R.string.all));
         spinnerUserValues.add(getString(R.string.multiplayer));
@@ -101,11 +101,11 @@ public class GameList extends AppCompatActivity {
             Toast.makeText(this, item.getTitle() + " " + item.getOrder(), Toast.LENGTH_SHORT).show();
 
             if (item.getTitle().equals(getString(R.string.all))) {
-                activeGames = games;
+                activeGames = allGames;
                 singlePlayerFlag = true;
 
             } else if (item.getTitle().equals(getString(R.string.multiplayer))) {
-                multiplayerGames = mydb.getAllMultiplayerGames();
+                allMultiplayerGames = mydb.getAllMultiplayerGames();
                 singlePlayerFlag = false;
             } else {
                 for (User user : users) {
@@ -140,7 +140,6 @@ public class GameList extends AppCompatActivity {
                     sortMethod = "Time";
                     break;
             }
-            sortActiveGames();
             fillList();
             return true;
         });
@@ -149,15 +148,25 @@ public class GameList extends AppCompatActivity {
     }
 
 
-    private void loadSpinnerUser() {
-        ArrayList<String> spinnerUserValues = new ArrayList<>();
-        for (User user : users) {
-            spinnerUserValues.add(user.getName());
+    private void loadSpinnerGameType() {
+        ArrayList<GameType> allGameTypes = mydb.getAllGameTypes();
+        ArrayList<String> spinnerGameTypeValues = new ArrayList<>();
+        spinnerGameTypeValues.add("All Gametypes");
+        for (GameType gameType : mydb.getAllGameTypes()) {
+            spinnerGameTypeValues.add(gameType.getDisplayName());
         }
-        spinnerUser.setAdapter(SpinnerUtil.createSpinnerAdapter(spinnerUserValues, this));
+        spinnerUser.setAdapter(SpinnerUtil.createSpinnerAdapter(spinnerGameTypeValues, this));
         spinnerUser.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (id == 0) { // ALL
+                    currentGameTypeId = -1;
+
+                } else {
+                    currentGameTypeId = (int) allGameTypes.get(position - 1).getId();
+
+                }
+                fillList();
             }
 
             @Override
@@ -170,23 +179,47 @@ public class GameList extends AppCompatActivity {
 
     private void fillList() {
 
+
+        if (currentGameTypeId != -1) {
+            if (singlePlayerFlag) {
+                activeGames = new ArrayList<>();
+                for (Game game : allGames) {
+                    if (game.getGameTypeId() == currentGameTypeId) {
+                        activeGames.add(game);
+                    }
+                }
+            } else { // multiplayer
+                activeMultiplayerGames = new ArrayList<>();
+                for (MultiplayerGame multiplayerGame : allMultiplayerGames) {
+                    if (multiplayerGame.getGames().get(0).getGameTypeId() == currentGameTypeId) {
+                        activeMultiplayerGames.add(multiplayerGame);
+                    }
+                }
+            }
+
+        } else {
+            activeGames = allGames;
+            activeMultiplayerGames = allMultiplayerGames;
+        }
+        sortActiveGames();
+
         if (singlePlayerFlag) {
             ArrayAdapter<Game> adapter;
             adapter = new ArrayAdapter<>(this,
                     android.R.layout.simple_list_item_1, activeGames);
             ListView lw = (ListView) findViewById(R.id.listView);
             lw.setOnItemClickListener((parent, view, position, id) -> {
-                long realId = games.get((int) id).getId();
+                long realId = activeGames.get((int) id).getId();
                 openGameStatistics(realId);
             });
             lw.setAdapter(adapter);
         } else {
             ArrayAdapter<MultiplayerGame> adapter;
             adapter = new ArrayAdapter<>(this,
-                    android.R.layout.simple_list_item_1, multiplayerGames);
+                    android.R.layout.simple_list_item_1, activeMultiplayerGames);
             ListView lw = (ListView) findViewById(R.id.listView);
             lw.setOnItemClickListener((parent, view, position, id) -> {
-                MultiplayerGame mpg = multiplayerGames.get((int) id);
+                MultiplayerGame mpg = activeMultiplayerGames.get((int) id);
                 openMultiplayerGameStatistics(mpg);
             });
             lw.setAdapter(adapter);
@@ -217,13 +250,13 @@ public class GameList extends AppCompatActivity {
     }
 
     public void loadGamesFromDB() {
-        games = mydb.getAllGames();
-        for (Game game : games) {
+        allGames = mydb.getAllGames();
+        for (Game game : allGames) {
             game.setUser(mydb.getUserFromId(game.getUserId()));
         }
-        activeGames = games;
+        activeGames = allGames;
         if (!singlePlayerFlag) {
-            multiplayerGames = mydb.getAllMultiplayerGames();
+            allMultiplayerGames = mydb.getAllMultiplayerGames();
         }
 
     }

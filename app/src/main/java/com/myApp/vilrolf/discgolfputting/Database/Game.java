@@ -1,6 +1,5 @@
 package com.myApp.vilrolf.discgolfputting.Database;
 
-import android.content.Context;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -9,14 +8,13 @@ import com.myApp.vilrolf.discgolfputting.Utils.DateUtil;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 
 /**
  * Game game game.
  * Created by Viljar on 20-Sep-16.
  */
 public class Game implements Serializable {
-    private  ArrayList<Throw> currentDiscThrows = new ArrayList<>();
+    private ArrayList<Throw> currentDiscThrows = new ArrayList<>();
     private long id;
     private GameType gameType;
     private String created_at;
@@ -52,11 +50,10 @@ public class Game implements Serializable {
     }
 
     /**
-     *
      * @return True if has discThrows, False if it does not have Discthrows.
      */
-    public boolean updateAvgPointPerThrow(){
-        if(discThrows.size() != 0){
+    public boolean updateAvgPointPerThrow() {
+        if (discThrows.size() != 0) {
             double score = 0;
             for (Throw th : discThrows) {
                 if (th.isHit()) {
@@ -157,6 +154,10 @@ public class Game implements Serializable {
             }
         }
         hits = sum;
+    }
+
+    public int getGameTypeId() {
+        return gameTypeId;
     }
 
     public String getRoundedScore() {
