@@ -2,6 +2,8 @@
 
 Android app for practicing putting in disc golf. Currently in Aplha Testing. http://imgur.com/a/4hxNV
 
+Code quality varies greatly. This is my first somewhat big android project, and i've gotten a lot better as i have continued working on it, however i have not gone back and fixed the old classes. So classes like "MainActivity" and "GameActivity" is a mess. Someday i will go back and work on it. 
+
 https://play.google.com/apps/testing/com.myApp.vilrolf.discgolfputting
 
 Use this page for for bugreports and suggestions.
