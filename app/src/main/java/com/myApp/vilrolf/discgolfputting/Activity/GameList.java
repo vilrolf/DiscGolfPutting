@@ -125,18 +125,18 @@ public class GameList extends AppCompatActivity {
 
 
     public void showPopupSort(View v) {
-        PopupMenu popup = new PopupMenu(this, v);
-        MenuInflater inflater = popup.getMenuInflater();
-        inflater.inflate(R.menu.popup_filter, popup.getMenu());
+                    PopupMenu popup = new PopupMenu(this, v);
+                    MenuInflater inflater = popup.getMenuInflater();
+                    inflater.inflate(R.menu.popup_filter, popup.getMenu());
 
-        popup.setOnMenuItemClickListener(item -> {
-            Toast.makeText(GameList.this, item.getTitle(), Toast.LENGTH_SHORT).show();
-            switch (item.getItemId()) {
-                case R.id.menu_score:
-                    sortMethod = "Score";
-                    break;
+                    popup.setOnMenuItemClickListener(item -> {
+                        Toast.makeText(GameList.this, item.getTitle(), Toast.LENGTH_SHORT).show();
+                        switch (item.getItemId()) {
+                            case R.id.menu_score:
+                                sortMethod = "Score";
+                                break;
 
-                case R.id.menu_time:
+                            case R.id.menu_time:
                     sortMethod = "Time";
                     break;
             }
@@ -178,7 +178,6 @@ public class GameList extends AppCompatActivity {
 
 
     private void fillList() {
-
 
         if (currentGameTypeId != -1) {
             if (singlePlayerFlag) {
@@ -227,7 +226,6 @@ public class GameList extends AppCompatActivity {
 
 
     }
-
 
     private void sortActiveGames() {
         switch (sortMethod) {
